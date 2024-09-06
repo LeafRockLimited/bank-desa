@@ -5,6 +5,8 @@ use App\Http\Controllers\NasabahController;
 use App\Http\Controllers\PinjamanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\KodeRekeningController;
+use App\Http\Controllers\JenisRekeningController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -85,6 +87,28 @@ Route::prefix('angsuran')
     Route::delete('delete/{id}','destroy')->name('delete')->middleware('checkPermission:delete angsuran');
     Route::get('download','download')->name('download')->middleware('checkPermission:view angsuran');
     Route::get('rekap_bulanan','rekap_bulanan')->name('rekap_bulanan')->middleware('checkPermission:view angsuran');
+});
+
+Route::prefix('kode_rekening')
+->name('kode_rekening.')
+->controller(KodeRekeningController::class)
+->group(function(){
+    Route::get('/','index')->name('index');
+    Route::get('show','show')->name('show');
+    Route::post('store','store')->name('store');
+    Route::put('update/{id}','update')->name('update');
+    Route::delete('delete/{id}','destroy')->name('delete');
+});
+
+Route::prefix('jenis_rekening')
+->name('jenis_rekening.')
+->controller(JenisRekeningController::class)
+->group(function(){
+    Route::get('/','index')->name('index');
+    Route::get('show','show')->name('show');
+    Route::post('store','store')->name('store');
+    Route::put('update/{id}','update')->name('update');
+    Route::delete('delete/{id}','destroy')->name('delete');
 });
 
 

@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('jenis_rekenings', function (Blueprint $table) {
             $table->id();
+            $table->integer('id_jenis');
+            $table->string('nama');
             $table->timestamps();
         });
     }

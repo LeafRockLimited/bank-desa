@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('kode_rekenings', function (Blueprint $table) {
             $table->id();
+            $table->json('kode_rekening');
+            $table->string('jenis_saldo');
+            $table->string('nama_kode_rekening');
             $table->timestamps();
         });
     }
