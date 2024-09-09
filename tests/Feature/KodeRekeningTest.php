@@ -16,7 +16,7 @@ class KodeRekeningTest extends TestCase
     {
         $user = User::first();
         $data = [
-            'kode_rekening' => '401231239',
+            'kode_rekening' => '4.0.1.2.312',
             'jenis_saldo' => '2',
             'nama_kode_rekening' => 'Test',
         ];

@@ -31,10 +31,12 @@ class KodeRekeningController extends Controller
             $kodeRekenings = KodeRekening::when($search,function($sub) use($search){
                 $sub->where('nama_kode_rekening','like',"%$search%");
             })->paginate(10);
+
             $kodeRekenings->getCollection()->transform(function($kodeRekening) {
                 $kodeRekening->jenis_rekening = JenisRekening::where('id_jenis', $kodeRekening->kode_rekening['id_jenis'])->first();
                 return $kodeRekening;
             });
+
             return response()->json($kodeRekenings);
         } catch (\Throwable $th) {
             //throw $th;
@@ -47,8 +49,9 @@ class KodeRekeningController extends Controller
             //code...
             $validated = $request->validated();
             $kode_rekening = $validated['kode_rekening'];
-    
-            if (preg_match('/^(\d)(\d+)/', $kode_rekening, $matches)) {
+            preg_match('/^(\d+)\..*\.(\d+)$/', $kode_rekening, $matches);
+
+            if (!empty($matches)) {
                 $kode = $matches[1];
                 $rest_number = $matches[2];
             } else {
@@ -76,7 +79,9 @@ class KodeRekeningController extends Controller
             $validated = $request->validated();
             $kode_rekening = $validated['kode_rekening'];
             
-            if (preg_match('/^(\d)(\d+)/', $kode_rekening, $matches)) {
+            preg_match('/^(\d+)\..*\.(\d+)$/', $kode_rekening, $matches);
+
+            if (!empty($matches)) {
                 $kode = $matches[1];
                 $rest_number = $matches[2];
             } else {
