@@ -13,7 +13,7 @@ use Inertia\Inertia;
 class KodeRekeningController extends Controller
 {
     //
-    public function index(Request $request)
+    public function index()
     {
         return Inertia::render('KodeRekening/Index');
     }

@@ -14,12 +14,12 @@ class JenisRekeningController extends Controller
     //
     public function index(Request $request)
     {
-        return Inertia::render('JenisRekening/Index');
+        return Inertia::render('Rekening/Index');
     }
 
     public function create()
     {
-        return Inertia::render('JenisRekening/Create');
+        return Inertia::render('Rekening/Create');
     }
 
     function show(Request $request){
@@ -28,7 +28,7 @@ class JenisRekeningController extends Controller
             $search = $request->search;
             $jenisRekenings = JenisRekening::with('kodeRekening')
             ->when($search,function($sub) use($search){
-                $sub->where('nama','like',"%$search%");
+                $sub->where('nama','ilike',"%$search%");
             })->paginate(10);
             return response()->json($jenisRekenings);
         } catch (\Throwable $th) {
