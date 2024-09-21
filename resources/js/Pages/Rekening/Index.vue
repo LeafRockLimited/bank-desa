@@ -14,7 +14,7 @@
                             <!-- description -->
                             <p> Isi data rekening untuk transaksi buku kas, untuk memudahkan proses transaksi yang ada didalam aplikasi</p>
                             <div class="mt-4">
-                                <Link :href="route('angsuran.create')">
+                                <Link :href="route('jenis_rekening.create')">
                                     <PrimaryButton class="">+ Tambah</PrimaryButton>
                                 </Link>
                             </div>
@@ -89,7 +89,7 @@ export default {
             return this.rekeningResponse.to??0
         },
         headers(){
-            return ['nama','created_at']
+            return ['id_jenis','nama','created_at']
         },
         links(){
             return this.rekeningResponse.links??[]
@@ -115,19 +115,24 @@ export default {
     },
     methods: {
         getData() {
-            axios.get(route('jenis_rekening.show'), {
-                params: {
-                    page: this.page,
-                    length: this.length,
-                    search: this.searchQuery
-                }
-            }).then(response => {
-                this.rekeningResponse = response.data
-                this.tableData = response.data.data.map((item) => {
-                    item.created_at = Helper.tanggal(item.created_at)
-                    return item
+            try {
+                axios.get(route('jenis_rekening.show_all'), {
+                    params: {
+                        page: this.page,
+                        length: this.length,
+                        search: this.searchQuery
+                    }
+                }).then(response => {
+                    this.rekeningResponse = response.data
+                    console.log(this.rekeningResponse)
+                    this.tableData = response.data.data.map((item) => {
+                        item.created_at = Helper.tanggal(item.created_at)
+                        return item
+                    })
                 })
-            })
+            } catch (error) {
+                throw error
+            }
         },
     },
     beforeMount() {

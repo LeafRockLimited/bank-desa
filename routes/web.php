@@ -95,6 +95,7 @@ Route::prefix('kode_rekening')
 ->group(function(){
     Route::get('/','index')->name('index');
     Route::get('show','show')->name('show');
+    Route::get('show_all','show_all')->name('show_all');
     Route::post('store','store')->name('store');
     Route::put('update/{id}','update')->name('update');
     Route::delete('delete/{id}','destroy')->name('delete');
@@ -106,6 +107,8 @@ Route::prefix('jenis_rekening')
 ->group(function(){
     Route::get('/','index')->name('index');
     Route::get('show','show')->name('show');
+    Route::get('show_all','show_all')->name('show_all');
+    Route::get('create','create')->name('create');
     Route::post('store','store')->name('store');
     Route::put('update/{id}','update')->name('update');
     Route::delete('delete/{id}','destroy')->name('delete');

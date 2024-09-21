@@ -26,7 +26,7 @@ class JenisRekeningController extends Controller
         try {
             //code...
             $search = $request->search;
-            $jenisRekenings = JenisRekening::with('kodeRekening')
+            $jenisRekenings = JenisRekening::with('kode_rekening')
             ->when($search,function($sub) use($search){
                 $sub->where('nama','ilike',"%$search%");
             })->paginate(10);
@@ -37,6 +37,26 @@ class JenisRekeningController extends Controller
         }
     }
 
+    /**
+     * Handles HTTP request to show all Jenis Rekening.
+     * 
+     * @param Request $request The HTTP request containing search query and pagination length.
+     * @return \Illuminate\Http\JsonResponse A JSON response containing the paginated Jenis Rekening data.
+     */
+    public function show_all(Request $request){
+        $length = $request->length??10;
+        $search = $request->search??null;
+        
+        $rekening = JenisRekening::when($search,function($sub) use($search){
+            $sub->where('nama','ilike',"%$search%");
+        })
+        ->paginate($length);
+
+        return response()
+        ->json($rekening);
+    }
+
+    
     function store(StoreJenisRekeningRequest $request){
         try {
             //code...   

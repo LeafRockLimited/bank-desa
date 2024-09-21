@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class JenisRekening extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $fillable = ['id_jenis', 'nama'];
     
-    public function kodeRekening()
+    public function kode_rekening()
     {
         return $this->hasMany(KodeRekening::class, 'kode_rekening->id_jenis', 'id_jenis');
     }

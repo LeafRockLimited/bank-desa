@@ -97,7 +97,7 @@
 
 import DangerButton from '@/Components/DangerButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-
+import Toast from '@/Toast';
   export default {
     components:{
         DangerButton,SecondaryButton
@@ -186,8 +186,17 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
             const data = this.data[index];
             try {
                 await axios.delete(route(this.deleteRoute, this.actionUsingId == true ? {id: data.id} : data));
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Data berhasil di hapus',
+                })
+
                 this.refreshData()
             } catch (error) {
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Data gagal di hapus',
+                })
                 console.log(error)
             }
         },
