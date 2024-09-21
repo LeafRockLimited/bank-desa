@@ -35,6 +35,8 @@
                         :lengthProps="lengthProps"
                         :deleteData="true"
                         deleteRoute="jenis_rekening.delete"
+                        :edit-data="true"
+                        edit-route="jenis_rekening.edit"
                         :totalData="totalData"
                         :endRow="endRow"
                         :actionUsingId=true
@@ -109,6 +111,13 @@ export default {
     },
     watch: {
         searchQuery(newVal) {
+            this.page = 1
+            this.getData()
+        },
+        page(newVal) {
+            this.getData()
+        },
+        length(newVal) {
             this.page = 1
             this.getData()
         }

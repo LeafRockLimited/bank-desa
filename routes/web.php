@@ -110,6 +110,7 @@ Route::prefix('jenis_rekening')
     Route::get('show_all','show_all')->name('show_all');
     Route::get('create','create')->name('create');
     Route::post('store','store')->name('store');
+    Route::get('edit/{id}','edit')->name('edit');
     Route::put('update/{id}','update')->name('update');
     Route::delete('delete/{id}','destroy')->name('delete');
 });

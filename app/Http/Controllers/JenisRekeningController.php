@@ -22,6 +22,13 @@ class JenisRekeningController extends Controller
         return Inertia::render('Rekening/Create');
     }
 
+    public function edit($jenisRekeningId){
+        $jenisRekening = JenisRekening::findOrFail($jenisRekeningId);
+        return Inertia::render('Rekening/Edit',[
+            'jenisRekening' => $jenisRekening
+        ]);
+    }
+
     function show(Request $request){
         try {
             //code...
@@ -44,7 +51,7 @@ class JenisRekeningController extends Controller
      * @return \Illuminate\Http\JsonResponse A JSON response containing the paginated Jenis Rekening data.
      */
     public function show_all(Request $request){
-        $length = $request->length??10;
+        $length = $request->length??1;
         $search = $request->search??null;
         
         $rekening = JenisRekening::when($search,function($sub) use($search){
