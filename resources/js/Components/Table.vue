@@ -50,7 +50,8 @@
                     {{ itemRow }}
                 </td>
                 <td v-show="deleteData == true || editData == true">
-                    <div class="flex flex-row space-x-2">
+                    <div class="flex flex-row space-x-2 items-center">
+                        <slot name="options" :item="data[index]"></slot>
                         <SecondaryButton @click="editDataHandler(index)" v-show="editData">
                             Edit
                         </SecondaryButton>

@@ -28,7 +28,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
 
 Route::prefix('user')
 ->name('user.')
@@ -93,10 +92,11 @@ Route::prefix('kode_rekening')
 ->name('kode_rekening.')
 ->controller(KodeRekeningController::class)
 ->group(function(){
-    Route::get('/','index')->name('index');
-    Route::get('show','show')->name('show');
-    Route::get('show_all','show_all')->name('show_all');
+    Route::get('/index/{jenis_rekening}','index')->name('index');
+    Route::get('show/{jenis_rekening}','show')->name('show');
+    Route::get('create/{jenis_rekening}','create')->name('create');
     Route::post('store','store')->name('store');
+    Route::get('edit/{id}','edit')->name('edit');
     Route::put('update/{id}','update')->name('update');
     Route::delete('delete/{id}','destroy')->name('delete');
 });
@@ -113,6 +113,7 @@ Route::prefix('jenis_rekening')
     Route::get('edit/{id}','edit')->name('edit');
     Route::put('update/{id}','update')->name('update');
     Route::delete('delete/{id}','destroy')->name('delete');
+});
 });
 
 
