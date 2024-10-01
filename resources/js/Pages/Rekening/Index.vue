@@ -132,7 +132,7 @@ export default {
                     }
                 }).then(response => {
                     this.rekeningResponse = response.data
-                    console.log(this.rekeningResponse)
+                    
                     this.tableData = response.data.data.map((item) => {
                         item.created_at = Helper.tanggal(item.created_at)
                         return item

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AngsuranController;
+use App\Http\Controllers\BukuBesarController;
 use App\Http\Controllers\NasabahController;
 use App\Http\Controllers\PinjamanController;
 use App\Http\Controllers\ProfileController;
@@ -93,7 +94,7 @@ Route::prefix('kode_rekening')
 ->controller(KodeRekeningController::class)
 ->group(function(){
     Route::get('/index/{jenis_rekening}','index')->name('index');
-    Route::get('show/{jenis_rekening}','show')->name('show');
+    Route::get('show/{jenis_rekening?}','show')->name('show');
     Route::get('create/{jenis_rekening}','create')->name('create');
     Route::post('store','store')->name('store');
     Route::get('edit/{id}','edit')->name('edit');
@@ -114,6 +115,24 @@ Route::prefix('jenis_rekening')
     Route::put('update/{id}','update')->name('update');
     Route::delete('delete/{id}','destroy')->name('delete');
 });
+
+
+Route::prefix('buku_besar')
+    ->name('buku_besar.')
+    ->controller(BukuBesarController::class)
+    ->group(function() {
+        Route::get('/', 'index')->name('index'); // Menampilkan daftar transaksi
+        Route::get('show', 'show')->name('show'); // Menampilkan daftar transaksi
+        Route::get('create', 'create')->name('create'); // Menampilkan form tambah transaksi
+        Route::post('store', 'store')->name('store'); // Menyimpan transaksi baru
+        Route::get('edit/{id}', 'edit')->name('edit'); // Menampilkan form edit transaksi
+        Route::put('update/{id}', 'update')->name('update'); // Memperbarui transaksi yang ada
+        Route::delete('delete/{id}', 'destroy')->name('delete'); // Menghapus transaksi
+    });
+
+
+
+
 });
 
 

@@ -46,12 +46,9 @@ class KodeRekeningController extends Controller
     }
 
 
-    public function show(Request $request, $jenisRekening){
+    public function show(Request $request, $jenisRekening = null){
 
-        if (!isset($jenisRekening)) {
-            abort(404, 'Jenis Rekening tidak ditemukan');
-        }
-
+    
         try {
             $search = $request->searchQuery;
             $length = $request->length??10;
@@ -60,8 +57,10 @@ class KodeRekeningController extends Controller
                 $sub->where('nomor_rekening','ilike',"%$search%")
                 ->orWhere('nama_kode_rekening','ilike',"%$search%");
             })
-            ->whereHas('jenis_rekening',function($sub) use($jenisRekening){
-                $sub->where('jenis_rekening_id',$jenisRekening);
+            ->when($jenisRekening,function($subRekening) use($jenisRekening){
+                $subRekening->whereHas('jenis_rekening',function($sub) use($jenisRekening){
+                    $sub->where('jenis_rekening_id',$jenisRekening);
+                });
             })
             ->paginate($length);
 
