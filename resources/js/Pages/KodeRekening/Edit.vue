@@ -13,44 +13,63 @@
                 <div class="grid grid-cols-1 gap-6">
                     
                     <div class=" w-full">
-                        <p class=" text-lg font-bold">Isi form kode rekenig</p>
-                        <!-- description -->
-                        <p> Isi formulir kode rekening baru</p>
+                        <p class="text-lg font-bold">Edit Kode Rekening</p>
+                        <p>Perbarui formulir kode rekening</p>
                     </div>
 
                     <div class="grid grid-cols-1 gap-6">
+                        <!-- Nomor Kode Rekening -->
                         <div class="">
-                            <label for="nama_lengkap" class="block text-sm font-medium text-gray-700">Nomor Kode Rekening</label>
-                            <input id="nama_lengkap" v-model="form.nomor_rekening" type="text"
+                            <label for="nomor_rekening" class="block text-sm font-medium text-gray-700">Nomor Kode Rekening</label>
+                            <input id="nomor_rekening" v-model="form.nomor_rekening" type="text"
                                 @input="formatNumber($event)"
-                                class="mt-1 block w-full border-gray-300 rounded-md 
-                                shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                :placeholder="kode_rekening.jenis_rekening_id+'.x.x.x...'" />
+                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                :placeholder="kode_rekening.jenis_rekening_id + '.x.x.x...'" />
                             <p v-if="errors.nomor_rekening" class="text-red-600 text-sm mt-1">{{ errors.nomor_rekening[0] }}</p>
                         </div>
 
+                        <!-- Nama Rekening -->
                         <div class="">
-                            <label for="nama_lengkap" class="block text-sm font-medium text-gray-700">Tipe Akun</label>
-                            <input id="nama_lengkap" v-model="form.jenis_saldo" type="text"
-                                class="mt-1 block w-full border-gray-300 rounded-md 
-                                shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" 
-                                placeholder="Kredit atau Debit"
-                                />
-                            <p v-if="errors.jenis_saldo" class="text-red-600 text-sm mt-1">{{ errors.jenis_saldo[0] }}</p>
-                        </div>
-
-                        <div class="">
-                            <label for="nama_lengkap" class="block text-sm font-medium text-gray-700">Nama Rekening</label>
-                            <input id="nama_lengkap" v-model="form.nama_kode_rekening" type="text"
-                                class="mt-1 block w-full border-gray-300 rounded-md 
-                                shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" 
+                            <label for="nama_rekening" class="block text-sm font-medium text-gray-700">Nama Rekening</label>
+                            <input id="nama_rekening" v-model="form.nama_rekening" type="text"
+                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                 placeholder="Nama kode rekening"
                                 />
-                            <p v-if="errors.nama_kode_rekening" class="text-red-600 text-sm mt-1">{{ errors.nama_kode_rekening[0] }}</p>
+                            <p v-if="errors.nama_rekening" class="text-red-600 text-sm mt-1">{{ errors.nama_rekening[0] }}</p>
                         </div>
 
-                        <button @click="sumbit">
-                            <PrimaryButton class="">+ Tambah Kode Rekening</PrimaryButton>
+                        <!-- Tipe Akun -->
+                        <div class="">
+                            <label for="tipe" class="block text-sm font-medium text-gray-700">Tipe Akun</label>
+                            <select id="tipe" v-model="form.tipe" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                <option value="">Pilih Tipe Akun</option>
+                                <option value="pendapatan">Pendapatan</option>
+                                <option value="pengeluaran">Pengeluaran</option>
+                                <option value="pembiayaan">Pembiayaan</option>
+                            </select>
+                            <p v-if="errors.tipe" class="text-red-600 text-sm mt-1">{{ errors.tipe[0] }}</p>
+                        </div>
+
+                        <!-- Status -->
+                        <div class="">
+                            <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+                            <select id="status" v-model="form.status" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                <option value="aktif">Aktif</option>
+                                <option value="nonaktif">Nonaktif</option>
+                            </select>
+                            <p v-if="errors.status" class="text-red-600 text-sm mt-1">{{ errors.status[0] }}</p>
+                        </div>
+
+                        <!-- Deskripsi -->
+                        <div class="">
+                            <label for="deskripsi" class="block text-sm font-medium text-gray-700">Deskripsi</label>
+                            <textarea id="deskripsi" v-model="form.deskripsi" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Deskripsi kode rekening"></textarea>
+                            <p v-if="errors.deskripsi" class="text-red-600 text-sm mt-1">{{ errors.deskripsi[0] }}</p>
+                        </div>
+
+                        <!-- Tombol Simpan -->
+                        <button @click="submit">
+                            <PrimaryButton class="">Simpan Perubahan</PrimaryButton>
                         </button>
                     </div>
                 </div>
@@ -61,34 +80,33 @@
 
 <script>
 import AuthenticatedLayout from '@/Layouts/AdminLayout.vue';
-import { Head,Link, useForm  } from '@inertiajs/vue3';
+import { Head, Link, useForm  } from '@inertiajs/vue3';
 import CardBody from '@/Components/CardBody.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue'
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Toast from '@/Toast';
 import axios from 'axios';
 
 export default {
-    components:{
-        AuthenticatedLayout,Head,Link, CardBody,PrimaryButton
+    components: {
+        AuthenticatedLayout, Head, Link, CardBody, PrimaryButton
     },
     props: {
-        kode_rekening:Object
+        kode_rekening: Object
     },
     data() {
         return {
-            form:useForm({
-                jenis_rekening_id:this.kode_rekening.jenis_rekening_id,
-                nomor_rekening:this.kode_rekening.nomor_rekening,
-                jenis_saldo: this.kode_rekening.jenis_saldo,
-                nama_kode_rekening:this.kode_rekening.nama_kode_rekening
+            form: useForm({
+                jenis_rekening_id: this.kode_rekening.jenis_rekening_id,
+                nomor_rekening: this.kode_rekening.nomor_rekening,
+                nama_rekening: this.kode_rekening.nama_rekening,
+                tipe: this.kode_rekening.tipe || null,
+                status: this.kode_rekening.status || 'aktif',
+                deskripsi: this.kode_rekening.deskripsi || null,
             }),
-            errors:{},
+            errors: {},
             blockSizes: [1], // Ukuran setiap blok dalam array
             separator: '.',
         }
-    },
-    computed: {
-        
     },
     methods: {
         formatNumber(event) {
@@ -97,41 +115,38 @@ export default {
             let startIndex = 0;
             let blockIndex = 0; // Index untuk mengulang array blockSizes
 
-            // Loop untuk memformat nomor dengan blok
             while (startIndex < rawNumber.length) {
-                const size = this.blockSizes[blockIndex % this.blockSizes.length]; // Mengulang ukuran blok dengan modulo
+                const size = this.blockSizes[blockIndex % this.blockSizes.length];
                 const block = rawNumber.substr(startIndex, size);
                 
                 if (block) {
-                formatted.push(block);
+                    formatted.push(block);
                 }
                 startIndex += size;
-                blockIndex++; // Pindah ke index blok berikutnya
+                blockIndex++;
             }
 
-            // Gabungkan blok-blok dengan separator
             this.form.nomor_rekening = formatted.join(this.separator);
         },
-        async sumbit(){
+        async submit() {
             try {
-                await axios.put(route('kode_rekening.update',{id: this.kode_rekening.id}),this.form)
+                await axios.put(route('kode_rekening.update', { id: this.kode_rekening.id }), this.form);
                 Toast.fire({
                     icon: 'success',
                     title: 'Data Berhasil disimpan',
-                })
-                this.$inertia.visit(route('kode_rekening.index',{jenis_rekening: this.kode_rekening.jenis_rekening_id}));
+                });
+                this.$inertia.visit(route('kode_rekening.index', { jenis_rekening: this.kode_rekening.jenis_rekening_id }));
             } catch (error) {
-                console.log(error)
-                if (error.response.status === 422) {
-                    this.errors = error.response.data.errors
+                console.log(error);
+                if (error.response && error.response.status === 422) {
+                    this.errors = error.response.data.errors;
                 }
                 Toast.fire({
                     icon: 'error',
                     title: 'Data gagal disimpan',
-                })
+                });
             }
         }
-        
     }
 }
 </script>

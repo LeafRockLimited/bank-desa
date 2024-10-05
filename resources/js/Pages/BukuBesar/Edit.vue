@@ -21,7 +21,7 @@
                             :loading="isLoading"
                             @search="fetchKodeRekening"
                             :pagination="pagination"
-                            label="nama_kode_rekening"
+                            label="nama_rekening"
                             placeholder="Pilih kode rekening"
                         />
                     </div>
@@ -75,7 +75,7 @@ export default {
     data() {
         return {
             form: useForm({
-                id_kode_rekening: this.bukuBesar.id_kode_rekening, // Diisi dengan data yang ada
+                id_kode_rekening: this.bukuBesar?.kode_rekening?.nama_rekening, // Diisi dengan data yang ada
                 tanggal: this.bukuBesar.tanggal, 
                 debit: parseInt(this.bukuBesar.debit),
                 kredit: parseInt(this.bukuBesar.kredit),
@@ -117,6 +117,9 @@ export default {
 
         // Submit form data for updating the record
         submitForm() {
+
+            this.form.id_kode_rekening = this.kodeRekenings.find(rekening => rekening.nama_rekening == this.form.id_kode_rekening).id;
+
             axios.put(route('buku_besar.update', this.bukuBesar.id), this.form)
                 .then(() => {
                     this.$inertia.visit(route('buku_besar.index'));
@@ -129,6 +132,7 @@ export default {
     mounted() {
         // Fetch initial data for kode rekening
         this.fetchKodeRekening();
+        console.log(this.bukuBesar)
     }
 };
 </script>

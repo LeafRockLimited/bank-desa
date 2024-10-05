@@ -90,7 +90,7 @@ class BukuBesarController extends Controller
      */
     public function edit(int $id)
     {
-        $bukuBesar = BukuBesar::find($id);
+        $bukuBesar = BukuBesar::where('id',$id)->with('kodeRekening')->first();
         // Mengambil data kode rekening untuk dropdown pilihan
         return Inertia::render('BukuBesar/Edit', [
             'bukuBesar' => $bukuBesar,

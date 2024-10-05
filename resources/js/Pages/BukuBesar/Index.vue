@@ -81,7 +81,7 @@ export default {
             return this.dataResponse.to ?? 0;
         },
         headers() {
-            return ['kode_rekening.nama_kode_rekening', 'keterangan' ,'tanggal', 'debit', 'kredit', 'saldo'];
+            return ['kode_rekening.nama_rekening', 'keterangan' ,'tanggal', 'debit', 'kredit', 'saldo'];
         },
         links() {
             return this.dataResponse.links ?? [];

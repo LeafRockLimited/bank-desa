@@ -10,10 +10,12 @@ class KodeRekening extends Model
     use HasFactory;
 
     protected $fillable = [
-        'jenis_rekening_id',
+       'jenis_rekening_id',
         'nomor_rekening',
-        'jenis_saldo', 
-        'nama_rekening'
+        'nama_rekening',
+        'tipe',
+        'status',
+        'deskripsi',
     ];
 
     protected $casts = [

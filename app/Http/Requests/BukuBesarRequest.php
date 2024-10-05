@@ -31,7 +31,7 @@ class BukuBesarRequest extends FormRequest
             'tanggal' => 'required|date', 
             'debit' => 'required|numeric', 
             'kredit' => 'required|numeric', 
-            'saldo' => 'required|numeric',
+            'saldo' => 'nullable|numeric',
         ];
     }
 

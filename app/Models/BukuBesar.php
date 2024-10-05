@@ -20,7 +20,7 @@ class BukuBesar extends Model
 
     public function kodeRekening()
     {
-        return $this->belongsTo(KodeRekening::class, 'id_kode_rekening');
+        return $this->belongsTo(KodeRekening::class, 'id_kode_rekening','id');
     }
 
      /**

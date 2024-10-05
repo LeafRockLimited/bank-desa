@@ -21,24 +21,29 @@
                             :loading="isLoading"
                             @search="fetchKodeRekening"
                             :pagination="pagination"
-                            label="nama_kode_rekening"
+                            label="nama_rekening"
                             placeholder="Pilih kode rekening"
                         />
+                        <label class="block text-sm font-medium text-red-500" v-if="errors.id_kode_rekening != null">{{ errors?.id_kode_rekening[0] }}</label>
                     </div>
 
                     <div class="mb-4">
                         <label for="tanggal" class="block text-gray-700">Tanggal</label>
                         <input v-model="form.tanggal" type="date" id="tanggal" class="w-full border-gray-300 rounded-md" />
+                        <label class="block text-sm font-medium text-red-500" v-if="errors.tanggal != null">{{ errors?.tanggal[0] }}</label>
                     </div>
 
                     <div class="mb-4">
                         <label for="debit" class="block text-gray-700">Debit</label>
                         <input v-model="form.debit" type="number" id="debit" class="w-full border-gray-300 rounded-md" />
+                        <label class="block text-sm font-medium text-red-500" v-if="errors.debit != null">{{ errors?.debit[0] }}</label>
                     </div>
 
                     <div class="mb-4">
                         <label for="kredit" class="block text-gray-700">Kredit</label>
                         <input v-model="form.kredit" type="number" id="kredit" class="w-full border-gray-300 rounded-md" />
+                        <label class="block text-sm font-medium text-red-500" v-if="errors.kredit != null">{{ errors?.kredit[0] }}</label>
+
                     </div>
 
                     <!-- Keterangan Field -->
@@ -63,7 +68,7 @@ import CardBody from '@/Components/CardBody.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import axios from 'axios';
 import vSelect from 'vue-select';
-
+import Toast from '@/Toast';
 export default {
     components: {
         AuthenticatedLayout, Head, CardBody, PrimaryButton, vSelect
@@ -83,7 +88,8 @@ export default {
                 length: 10
             },
             isLoading: false,
-            searchQuery: null
+            searchQuery: null,
+            errors: {}
         };
     },
     methods: {
@@ -115,11 +121,22 @@ export default {
         submitForm() {
             axios.post(route('buku_besar.store'), this.form)
                 .then(() => {
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Data Berhasil disimpan',
+                    })
                     this.$inertia.visit(route('buku_besar.index'));
                 })
                 .catch(error => {
-                    console.log(error);
+                    if (error.response.status === 422) {
+                        this.errors = error.response.data.errors;
+                    }
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Data gagal disimpan',
+                    })
                 });
+                
         }
     },
     watch: {
