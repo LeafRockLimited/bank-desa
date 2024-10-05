@@ -17,6 +17,18 @@ class Angsuran extends Model
         'sisa_pinjaman',
     ];
 
+    public $slug = 'angsuran';
+
+    
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+           
+        });
+    }
+
     public function pinjaman(){
         return $this->belongsTo(Pinjaman::class,'pinjaman_id','id');
     }

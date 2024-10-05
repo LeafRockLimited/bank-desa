@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('jenis_rekenings', function (Blueprint $table) {
-            $table->softDeletes();
+        Schema::create('rekening_plottings', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('kode_rekening_id')->constrained('kode_rekenings')->onDelete('cascade')->onUpdate('cascade');
+            $table->string('slug');
+            $table->timestamps();
         });
     }
 
@@ -21,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('jenis_rekenings', function (Blueprint $table) {
-            $table->dropColumn('deleted_at');
-        });
+        Schema::dropIfExists('rekening_plottings');
     }
 };

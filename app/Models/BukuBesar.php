@@ -11,7 +11,11 @@ class BukuBesar extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'id_kode_rekening', 'keterangan' ,'tanggal', 'debit', 'kredit', 'saldo'
+        'id_kode_rekening', 
+        'keterangan' ,
+        'nomor_ref', 'komponen_laporan_arus_kas', 
+        'buku_pembantu', 'jumlah_unit', 
+        'tanggal', 'debit', 'kredit', 'saldo'
     ];
 
     public function kodeRekening()

@@ -11,7 +11,7 @@ class BukuBesarRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,26 @@ class BukuBesarRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'id_kode_rekening' => 'required|exists:kode_rekenings,id', 
+            'keterangan' => 'nullable' ,
+            'nomor_ref' => 'nullable', 
+            'komponen_laporan_arus_kas' => 'nullable', 
+            'buku_pembantu' => 'nullable', 
+            'jumlah_unit' => 'nullable', 
+            'tanggal' => 'required|date', 
+            'debit' => 'required|numeric', 
+            'kredit' => 'required|numeric', 
+            'saldo' => 'required|numeric',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'required' => ':attribute harus diisi',
+            'exists' => ':attribute tidak ditemukan',
+            'numeric' => ':attribute harus berupa angka',
+            'date' => ':attribute harus berupa tanggal',
         ];
     }
 }

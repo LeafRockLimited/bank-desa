@@ -22,10 +22,12 @@ class StoreKodeRekeningRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'jenis_rekening_id' => ['required','exists:jenis_rekenings,id'],
-            'nomor_rekening' => ['required','string'],
-            'jenis_saldo' => ['required','string', 'max:255'],
-            'nama_kode_rekening' => ['required', 'string', 'max:255'],
+            'jenis_rekening_id' => 'required|exists:jenis_rekenings,id',
+            'nomor_rekening' => 'required',
+            'nama_rekening' => 'required',
+            'tipe' => 'nullable|in:pendapatan,pengeluaran,pembiayaan',
+            'status' => 'nullable|in:aktif,nonaktif',
+            'deskripsi' => 'nullable',
         ];
     }
 
@@ -33,9 +35,8 @@ class StoreKodeRekeningRequest extends FormRequest
     {
         return [
             'required' => 'Kolom :attribute harus diisi',
-            'max' => 'Kolom :attribute terlalu panjang',
-            'string' => 'Kolom :attribute harus berupa string',
-            'exists' => 'Kolom :attribute tidak ditemukan',
+            'in' => 'Kolom :attribute harus dipilih',
+            'exists' => 'Kolom :attribute harus dipilih',
         ];
     }
 }

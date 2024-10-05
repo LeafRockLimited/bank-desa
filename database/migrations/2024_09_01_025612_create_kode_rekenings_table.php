@@ -13,10 +13,14 @@ return new class extends Migration
     {
         Schema::create('kode_rekenings', function (Blueprint $table) {
             $table->id();
-            $table->json('kode_rekening');
-            $table->string('jenis_saldo');
-            $table->string('nama_kode_rekening');
+            $table->foreignId('jenis_rekening_id')->constrained('jenis_rekenings')->onDelete('cascade')->onUpdate('cascade');
+            $table->string('nomor_rekening');
+            $table->string('nama_rekening');
+            $table->enum('tipe', ['pendapatan', 'pengeluaran','pembiayaan']);
+            $table->enum('status', ['aktif', 'nonaktif'])->default('aktif');
+            $table->string('deskripsi')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

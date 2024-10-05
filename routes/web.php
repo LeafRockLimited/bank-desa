@@ -73,6 +73,7 @@ Route::prefix('pinjaman')
     Route::get('edit/{id}','edit')->name('edit')->middleware('checkPermission:edit pinjaman');
     Route::put('update/{id}','update')->name('update')->middleware('checkPermission:edit pinjaman');
     Route::get('download','download')->name('download')->middleware('checkPermission:view pinjaman');
+    Route::get('setting-pinjaman','setting_pinjaman')->name('setting_pinjaman');
 });
 
 Route::prefix('angsuran')
@@ -87,6 +88,7 @@ Route::prefix('angsuran')
     Route::delete('delete/{id}','destroy')->name('delete')->middleware('checkPermission:delete angsuran');
     Route::get('download','download')->name('download')->middleware('checkPermission:view angsuran');
     Route::get('rekap_bulanan','rekap_bulanan')->name('rekap_bulanan')->middleware('checkPermission:view angsuran');
+    Route::get('setting-angsuran','setting_angsuran')->name('setting_angsuran');
 });
 
 Route::prefix('kode_rekening')

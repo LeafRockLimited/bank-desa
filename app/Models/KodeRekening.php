@@ -13,7 +13,7 @@ class KodeRekening extends Model
         'jenis_rekening_id',
         'nomor_rekening',
         'jenis_saldo', 
-        'nama_kode_rekening'
+        'nama_rekening'
     ];
 
     protected $casts = [
@@ -28,5 +28,9 @@ class KodeRekening extends Model
 
     public function jenis_rekening(){
         return $this->belongsTo(JenisRekening::class,'jenis_rekening_id','id');
+    }
+
+    public function rekening_plotting(){
+        return $this->hasOne(RekeningPlotting::class,'kode_rekening_id','id');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BukuBesarRequest;
 use App\Models\BukuBesar;
 use App\Models\KodeRekening;
 use Illuminate\Http\Request;
@@ -65,22 +66,14 @@ class BukuBesarController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(BukuBesarRequest $request)
     {
         // Validasi data input
-        $validated = $request->validate([
-            'id_kode_rekening' => 'required|exists:kode_rekenings,id',
-            'tanggal' => 'required|date',
-            'keterangan' => 'nullable',
-            'debit' => 'nullable|numeric|min:0',
-            'kredit' => 'nullable|numeric|min:0',
-            'saldo' => 'nullable|numeric|min:0',
-        ]);
+        $validated = $request->validated();
 
         try {
-                // Menyimpan transaksi baru ke buku besar
-        $bukuBesar = BukuBesar::create($validated);
-
+        
+        BukuBesar::create($validated);
         
         // Redirect ke halaman index dengan pesan sukses
         return response()->json('Berhasil Menambahkan Transaksi Buku Besar', 200);

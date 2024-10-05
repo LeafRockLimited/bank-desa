@@ -16,6 +16,10 @@ return new class extends Migration
             $table->foreignId('id_kode_rekening')->references('id')->on('kode_rekenings')
             ->onDelete('cascade')->onUpdate('cascade');
             $table->string('keterangan')->nullable();
+            $table->string('nomor_ref')->nullable();
+            $table->string('komponen_laporan_arus_kas')->nullable();
+            $table->string('buku_pembantu')->nullable();
+            $table->integer('jumlah_unit')->nullable();
             $table->date('tanggal'); // Tanggal transaksi
             $table->decimal('debit', 15, 2)->default(0); // Kolom debit
             $table->decimal('kredit', 15, 2)->default(0); // Kolom kredit
