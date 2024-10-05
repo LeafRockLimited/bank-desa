@@ -33,8 +33,14 @@ class KodeRekeningController extends Controller
         if (!isset($jenisRekening)) {
             abort(404, 'Jenis Rekening tidak ditemukan');
         }
+
+        $tipe = KodeRekening::select('tipe')->groupBy('tipe')->get();
+        $subTipe = KodeRekening::select('sub_tipe')->groupBy('sub_tipe')->get();
+
         return Inertia::render('KodeRekening/Create',[
-            'jenis_rekening' => $jenisRekening
+            'jenis_rekening' => $jenisRekening,
+            'tipe' => $tipe,
+            'sub_tipe' => $subTipe
         ]);
     }
 

@@ -10,17 +10,15 @@ class KodeRekening extends Model
     use HasFactory;
 
     protected $fillable = [
-       'jenis_rekening_id',
+        'jenis_rekening_id',
         'nomor_rekening',
         'nama_rekening',
         'tipe',
+        'sub_tipe',
         'status',
         'deskripsi',
     ];
 
-    protected $casts = [
-        'kode_rekening' => 'json',
-    ];
     
     public function getJenisRekeningAttribute()
     {
@@ -34,5 +32,10 @@ class KodeRekening extends Model
 
     public function rekening_plotting(){
         return $this->hasOne(RekeningPlotting::class,'kode_rekening_id','id');
+    }
+
+    public function bukuBesars()
+    {
+        return $this->hasMany(BukuBesar::class, 'id_kode_rekening', 'id');
     }
 }

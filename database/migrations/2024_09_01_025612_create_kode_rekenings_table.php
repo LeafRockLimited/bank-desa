@@ -16,7 +16,8 @@ return new class extends Migration
             $table->foreignId('jenis_rekening_id')->constrained('jenis_rekenings')->onDelete('cascade')->onUpdate('cascade');
             $table->string('nomor_rekening');
             $table->string('nama_rekening');
-            $table->enum('tipe', ['pendapatan', 'pengeluaran','pembiayaan']);
+            $table->string('tipe')->index()->default('Pembiayaan');
+            $table->string('sub_tipe')->index()->nullable();
             $table->enum('status', ['aktif', 'nonaktif'])->default('aktif');
             $table->string('deskripsi')->nullable();
             $table->timestamps();

@@ -41,13 +41,17 @@
                         <!-- Tipe Akun -->
                         <div class="">
                             <label for="tipe" class="block text-sm font-medium text-gray-700">Tipe Akun</label>
-                            <select id="tipe" v-model="form.tipe" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                                <option value="">Pilih Tipe Akun</option>
-                                <option value="pendapatan">Pendapatan</option>
-                                <option value="pengeluaran">Pengeluaran</option>
-                                <option value="pembiayaan">Pembiayaan</option>
-                            </select>
+                            <v-select v-model="form.tipe" taggable :options="tipeList">
+                            </v-select>
                             <p v-if="errors.tipe" class="text-red-600 text-sm mt-1">{{ errors.tipe[0] }}</p>
+                        </div>
+
+                        <!-- Tipe Akun -->
+                        <div class="">
+                            <label for="tipe" class="block text-sm font-medium text-gray-700">Sub Tipe Akun</label>
+                            <v-select v-model="form.sub_tipe" taggable :options="subTipeList">
+                            </v-select>
+                            <p v-if="errors.sub_tipe" class="text-red-600 text-sm mt-1">{{ errors.sub_tipe[0] }}</p>
                         </div>
 
                         <!-- Status -->
@@ -91,7 +95,9 @@ export default {
         AuthenticatedLayout, Head, Link, CardBody, PrimaryButton
     },
     props: {
-        jenis_rekening: Object
+        jenis_rekening: Object,
+        tipe:Array,
+        sub_tipe:Array
     },
     data() {
         return {
@@ -99,13 +105,32 @@ export default {
                 jenis_rekening_id: this.jenis_rekening.id,
                 nomor_rekening: null,
                 nama_rekening: null,
-                tipe: 'pendapatan',
+                tipe: null,
+                sub_tipe: null,
                 status: 'aktif',
                 deskripsi: null,
             }),
             errors: {},
             blockSizes: [1], // Ukuran setiap blok dalam array
             separator: '.',
+        }
+    },
+    computed: {
+        tipeList(){
+            return this.tipe.map((item)=>{
+                return {
+                    'label' : item.tipe,
+                    'code' : item.tipe
+                }
+            })
+        },
+        subTipeList(){
+            return this.sub_tipe.map((item)=>{
+                return {
+                    'label' : item.sub_tipe,
+                    'code' : item.sub_tipe
+                }
+            })
         }
     },
     methods: {

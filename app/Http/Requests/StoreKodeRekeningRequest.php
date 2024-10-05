@@ -25,7 +25,8 @@ class StoreKodeRekeningRequest extends FormRequest
             'jenis_rekening_id' => 'required|exists:jenis_rekenings,id',
             'nomor_rekening' => 'required',
             'nama_rekening' => 'required',
-            'tipe' => 'nullable|in:pendapatan,pengeluaran,pembiayaan',
+            'tipe' => 'required',
+            'sub_tipe' => 'required',
             'status' => 'nullable|in:aktif,nonaktif',
             'deskripsi' => 'nullable',
         ];

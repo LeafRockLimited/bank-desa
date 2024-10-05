@@ -95,7 +95,7 @@ export default {
             return this.dataResponse.to??0
         },
         headers(){
-            return ['nomor_rekening','nama_rekening','created_at']
+            return ['nomor_rekening','nama_rekening', 'tipe', 'sub_tipe', 'deskripsi','created_at']
         },
         links(){
             return this.dataResponse.links??[]
