@@ -113,6 +113,11 @@
                         <!-- end status pinjaman filter -->
                     </div>
                 </template>
+                <template #options="{ item }" >
+                    <SecondaryButton @click="$inertia.visit(route('agunan.show', item.id))">
+                        Agunan
+                    </SecondaryButton>
+                </template>
             </Table>
         </template>
     </CardBody>
@@ -129,10 +134,10 @@ import PrimaryButton from '@/Components/PrimaryButton.vue'
 import Helper from '@/Helper.js'
 import TahunFilter from '@/Components/TahunFilter.vue'
 import BulanFilter from '@/Components/BulanFilter.vue'
-
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 export default {
     components: {
-        AuthenticatedLayout, Head, Link, Table, CardBody, PrimaryButton, TahunFilter, BulanFilter
+        AuthenticatedLayout, Head, Link, Table, CardBody, PrimaryButton, TahunFilter, BulanFilter,SecondaryButton
     },
     data() {
         return {

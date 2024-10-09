@@ -35,9 +35,16 @@ class AgunanController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Agunan $agunan)
+    public function show($pinjamanId)
     {
-        //
+        // Ambil semua agunan berdasarkan pinjaman_id
+        $agunans = Agunan::where('pinjaman_id', $pinjamanId)->get();
+
+        // Gunakan Inertia untuk merender halaman dengan data agunan
+        return Inertia::render('Agunan/Show', [
+            'pinjamanId' => $pinjamanId,
+            'agunans' => $agunans,
+        ]);
     }
 
     /**

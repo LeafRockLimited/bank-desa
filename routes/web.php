@@ -66,7 +66,7 @@ Route::middleware('auth')->group(function () {
         ->controller(AgunanController::class)
         ->group(function () {
             Route::get('/', 'index')->name('index');
-            Route::get('show', 'show')->name('show');
+            Route::get('show/{pinjaman_id}', 'show')->name('show');
             Route::get('create/{pinjaman_id}', 'create')->name('create');
             Route::post('store', 'store')->name('store');
             Route::get('edit/{id}', 'edit')->name('edit');

@@ -20,28 +20,28 @@
                         v-model="form.jenis_agunan"
                         label="Jenis Agunan"
                         ></v-select>
-                        <span v-if="errors.jenis_agunan" class="text-red-600 text-sm">{{ errors.jenis_agunan }}</span>
+                        <span v-if="errors.jenis_agunan" class="text-red-600 text-sm">{{ errors.jenis_agunan[0] }}</span>
                     </div>
 
                     <!-- Nilai Agunan -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Nilai Agunan</label>
                         <input type="number" v-model="form.nilai_agunan" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
-                        <span v-if="errors.nilai_agunan" class="text-red-600 text-sm">{{ errors.nilai_agunan }}</span>
+                        <span v-if="errors.nilai_agunan" class="text-red-600 text-sm">{{ errors.nilai_agunan[0] }}</span>
                     </div>
 
                     <!-- Deskripsi Agunan -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Deskripsi Agunan</label>
                         <textarea v-model="form.deskripsi_agunan" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"></textarea>
-                        <span v-if="errors.deskripsi_agunan" class="text-red-600 text-sm">{{ errors.deskripsi_agunan }}</span>
+                        <span v-if="errors.deskripsi_agunan" class="text-red-600 text-sm">{{ errors.deskripsi_agunan[0] }}</span>
                     </div>
 
                     <!-- Tanggal Diserahkan -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Tanggal Diserahkan</label>
                         <input type="date" v-model="form.tanggal_diserahkan" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
-                        <span v-if="errors.tanggal_diserahkan" class="text-red-600 text-sm">{{ errors.tanggal_diserahkan }}</span>
+                        <span v-if="errors.tanggal_diserahkan" class="text-red-600 text-sm">{{ errors.tanggal_diserahkan[0] }}</span>
                     </div>
 
                     <!-- Status Agunan -->
@@ -52,14 +52,14 @@
                             <option value="diserahkan">Diserahkan</option>
                             <option value="dilepaskan">Dilepaskan</option>
                         </select>
-                        <span v-if="errors.status_agunan" class="text-red-600 text-sm">{{ errors.status_agunan }}</span>
+                        <span v-if="errors.status_agunan" class="text-red-600 text-sm">{{ errors.status_agunan[0] }}</span>
                     </div>
 
                     <!-- Gambar Agunan -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700">File Jaminan</label>
                         <input type="file" @change="handleFileChange" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
-                        <span v-if="errors.gambar_agunan" class="text-red-600 text-sm">{{ errors.gambar_agunan }}</span>
+                        <span v-if="errors.gambar_agunan" class="text-red-600 text-sm">{{ errors.gambar_agunan [0]}}</span>
                     </div>
                 </div>
 
@@ -77,7 +77,6 @@
 import AuthenticatedLayout from '@/Layouts/AdminLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import CardBody from '@/Components/CardBody.vue';
-import Helper from '@/Helper.js';
 
 export default {
     components: {
@@ -107,17 +106,25 @@ export default {
         handleFileChange(event) {
             this.form.gambar_agunan = event.target.files[0]; // Simpan file gambar ke form
         },
-        prosesAgunan() {
+        async prosesAgunan() {
            
 
             try {
-                this.form.post(route('agunan.store'), {
-                    onError: (errors) => {
-                        this.errors = errors;
-                    }
-                });
+
+                const request = await axios.post(route('agunan.store'), this.form,{
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                })
+                console.log(request)
+                this.$inertia.visit(route('pinjaman.index'));
+               
             } catch (error) {
-                console.error(error);
+
+                if (error.response.status == 422) {
+                    this.errors = error.response.data.errors
+                }
+                // console.error(error);
             }
         }
     }
