@@ -6,12 +6,15 @@ use App\Exports\AngsuranExport;
 use App\Http\Requests\StoreAngsuranRequest;
 use App\Models\Angsuran;
 use App\Models\Pinjaman;
+use App\RekeningTrait;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 
 class AngsuranController extends Controller
 {
+
+    use RekeningTrait;
     /**
      * Display a listing of the resource.
      */
@@ -33,14 +36,23 @@ class AngsuranController extends Controller
      */
     public function store(StoreAngsuranRequest $request)
     {
-        $data = $request->validate([
-            'pinjaman_id' => 'required',
-            'tanggal_bayar' => 'required',
-            'jumlah_bayar' => 'required|numeric|min:10000',
-            'bunga' => 'required',
-        ]);
 
+        
         try {
+            $angsuran = new Angsuran();
+            
+            
+            $data = $request->validate([
+                'pinjaman_id' => 'required',
+                'tanggal_bayar' => 'required',
+                'jumlah_bayar' => 'required|numeric|min:10000',
+                'bunga' => 'required',
+            ]);
+
+            $rekening = $this->getAngsuranRekening($angsuran);
+
+            
+
             $pinjaman = Pinjaman::findOrFail($data['pinjaman_id']);
             $lastAngsuran = $pinjaman->last_angsuran;
             $jumlahPinjaman = $pinjaman->jumlah_pinjaman;
@@ -52,7 +64,9 @@ class AngsuranController extends Controller
             return response()->json(['message' => 'Berhasil melakukan transaksi']);
 
         } catch (\Throwable $th) {
-            return response()->json(['message' => 'Gagal melakukan transaksi'],500);
+            return response()->json([
+                'message' => $th->getMessage()
+            ],500);
         }
     }
 

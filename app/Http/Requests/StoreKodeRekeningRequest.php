@@ -22,10 +22,22 @@ class StoreKodeRekeningRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
-            'kode_rekening' => ['required', 'string', 'max:255'],
-            'jenis_saldo' => ['required','string', 'max:255'],
-            'nama_kode_rekening' => ['required', 'string', 'max:255'],
+            'jenis_rekening_id' => 'required|exists:jenis_rekenings,id',
+            'nomor_rekening' => 'required',
+            'nama_rekening' => 'required',
+            'tipe' => 'required',
+            'sub_tipe' => 'required',
+            'status' => 'nullable|in:aktif,nonaktif',
+            'deskripsi' => 'nullable',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'required' => 'Kolom :attribute harus diisi',
+            'in' => 'Kolom :attribute harus dipilih',
+            'exists' => 'Kolom :attribute harus dipilih',
         ];
     }
 }

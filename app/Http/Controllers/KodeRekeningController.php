@@ -8,97 +8,96 @@ use App\Models\KodeRekening;
 use App\Http\Requests\StoreKodeRekeningRequest;
 use App\Http\Requests\UpdateKodeRekeningRequest;
 use App\Models\JenisRekening;
+use Exception;
 use Inertia\Inertia;
 
 class KodeRekeningController extends Controller
 {
     //
-    public function index(Request $request)
-    {
-        return Inertia::render('KodeRekening/Index');
+    public function index($idJenisRekening)
+    {   
+
+        $jenisRekening = JenisRekening::find($idJenisRekening);
+        if (!isset($jenisRekening)) {
+            abort(404, 'Jenis Rekening tidak ditemukan');
+        }
+       
+        return Inertia::render('KodeRekening/Index',[
+            'jenis_rekening' => $idJenisRekening
+        ]);
     }
 
-    public function create()
+    public function create($jenis_rekening_id)
     {
-        return Inertia::render('KodeRekening/Create');
+        $jenisRekening = JenisRekening::find($jenis_rekening_id);
+        if (!isset($jenisRekening)) {
+            abort(404, 'Jenis Rekening tidak ditemukan');
+        }
+
+        $tipe = KodeRekening::select('tipe')->groupBy('tipe')->get();
+        $subTipe = KodeRekening::select('sub_tipe')->groupBy('sub_tipe')->get();
+
+        return Inertia::render('KodeRekening/Create',[
+            'jenis_rekening' => $jenisRekening,
+            'tipe' => $tipe,
+            'sub_tipe' => $subTipe
+        ]);
+    }
+
+    public function edit($kodeRekeningId){
+        $kodeRekening = KodeRekening::findOrFail($kodeRekeningId);
+        return Inertia::render('KodeRekening/Edit',[
+            'kode_rekening' => $kodeRekening
+        ]);
     }
 
 
-    public function show(Request $request){
+    public function show(Request $request, $jenisRekening = null){
+
+    
         try {
-            //code...
             $search = $request->searchQuery;
+            $length = $request->length??10;
+            
             $kodeRekenings = KodeRekening::when($search,function($sub) use($search){
-                $sub->where('nama_kode_rekening','like',"%$search%");
-            })->paginate(10);
-
-            $kodeRekenings->getCollection()->transform(function($kodeRekening) {
-                $kodeRekening->jenis_rekening = JenisRekening::where('id_jenis', $kodeRekening->kode_rekening['id_jenis'])->first();
-                return $kodeRekening;
-            });
+                $sub->where('nomor_rekening','ilike',"%$search%")
+                ->orWhere('nama_kode_rekening','ilike',"%$search%");
+            })
+            ->when($jenisRekening,function($subRekening) use($jenisRekening){
+                $subRekening->whereHas('jenis_rekening',function($sub) use($jenisRekening){
+                    $sub->where('jenis_rekening_id',$jenisRekening);
+                });
+            })
+            ->paginate($length);
 
             return response()->json($kodeRekenings);
         } catch (\Throwable $th) {
-            //throw $th;
-            return response()->json($th->getMessage());
+            return response()->json([
+                'message' => $th->getMessage()
+            ],500);
         }   
     }
 
     public function store(StoreKodeRekeningRequest $request){
+        $validated = $request->validated();
         try {
-            //code...
-            $validated = $request->validated();
-            $kode_rekening = $validated['kode_rekening'];
-            preg_match('/^(\d+)\..*\.(\d+)$/', $kode_rekening, $matches);
-
-            if (!empty($matches)) {
-                $kode = $matches[1];
-                $rest_number = $matches[2];
-            } else {
-                return response()->json('Terdapat kesalahan format kode', 400);
-            }
-
-            $data = KodeRekening::create([
-                'kode_rekening' => json_encode([
-                    'id_jenis' => $kode,
-                    'kode' => $rest_number,
-                ]),
-                'jenis_saldo' => $validated['jenis_saldo'],
-                'nama_kode_rekening' => $validated['nama_kode_rekening'],
-            ]);
+            KodeRekening::create($validated);
             return response()->json('Berhasil Menambahkan Kode Rekening',200);
         } catch (\Throwable $th) {
-            //throw $th;
             Log::error($th->getMessage());
-            return response()->json($th->getMessage());
+            return response()->json($th->getMessage(),500);
         }
     }
 
-    public function update(UpdateKodeRekeningRequest $request, $id) {
+    public function update(StoreKodeRekeningRequest $request, $id) {
+        $validated = $request->validated();
+        
         try {
-            $validated = $request->validated();
-            $kode_rekening = $validated['kode_rekening'];
-            
-            preg_match('/^(\d+)\..*\.(\d+)$/', $kode_rekening, $matches);
-
-            if (!empty($matches)) {
-                $kode = $matches[1];
-                $rest_number = $matches[2];
-            } else {
-                return response()->json('Terdapat kesalahan format kode', 400);
-            }
-            
             $kodeRekening = KodeRekening::findOrFail($id);
-            $kodeRekening->update([
-                'kode_rekening' => json_encode([
-                    'id_jenis' => $kode,
-                    'kode' => $rest_number,
-                ]),
-                'jenis_saldo' => $validated['jenis_saldo'],
-                'nama_kode_rekening' => $validated['nama_kode_rekening'],
-            ]);
+            $kodeRekening->update($validated);
+            $kodeRekening->save();
             
-            return response()->json('Berhasil Memperbarui Kode Rekening', 200);
+            return response()->json('Berhasil Memperbarui Kode Rekening');
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
             return response()->json($th->getMessage(), 500);

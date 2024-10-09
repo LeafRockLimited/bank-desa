@@ -12,6 +12,10 @@ import vSelect from 'vue-select'
 import 'vue-select/dist/vue-select.css';
 import moment from 'moment';
 
+import VueSweetalert2 from 'vue-sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
+
+
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({
@@ -21,6 +25,7 @@ createInertiaApp({
         const app = createApp({ render: () => h(App, props) });
         app.use(plugin)
             .use(ZiggyVue)
+            .use(VueSweetalert2)
             .component('VueDatePicker', VueDatePicker)
             .component('v-select', vSelect);
         

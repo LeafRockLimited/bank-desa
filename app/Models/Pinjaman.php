@@ -10,6 +10,8 @@ class Pinjaman extends Model
     use HasFactory;
     protected $table = 'pinjamans';
 
+    public $slug = 'pinjaman';
+
     protected $fillable = [
         'nasabah_id',
         'jenis_pinjaman',
@@ -45,5 +47,10 @@ class Pinjaman extends Model
     public function getLastAngsuranAttribute()
     {
         return $this->angsuran()->orderBy('created_at', 'desc')->first();
+    }
+
+    public function agunans()
+    {
+        return $this->hasMany(Agunan::class, 'pinjaman_id');
     }
 }

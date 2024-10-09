@@ -138,17 +138,17 @@ export default {
             return Helper.rupiah(value)
         },
         async prosesPinjam(){
-            try {
-
-                this.form.nominal_diterima = this.form.jumlah_pinjaman
-
-                const request = await axios.post(route('pinjaman.store'),this.form);
-                const response = request.data;
-                this.$inertia.visit(route('pinjaman.index'));
-            } catch (error) {
-                
-                this.errors = error.response.data.errors;
-            }
+          this.form.nominal_diterima = this.form.jumlah_pinjaman
+            this.form.transform((data) => ({
+                  ...data,
+                  nominal_diterima: data.jumlah_pinjaman,
+                })).post(route('pinjaman.store'),
+              {
+                onError: (errors) => {
+                  this.errors = errors
+                }
+              }
+            );
             
         }
     },
