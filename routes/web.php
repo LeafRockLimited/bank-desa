@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AgunanController;
 use App\Http\Controllers\AngsuranController;
 use App\Http\Controllers\BukuBesarController;
 use App\Http\Controllers\NasabahController;
@@ -58,6 +59,20 @@ Route::middleware('auth')->group(function () {
             Route::delete('delete/{nasabah}', 'destroy')->name('delete')->middleware('checkPermission:delete nasabah');
             Route::get('download', 'download')->name('download')->middleware('checkPermission:view nasabah');
             Route::get('rekap_tahunan', 'rekap_tahunan')->name('rekap_tahunan')->middleware('checkPermission:view nasabah');
+        });
+
+    Route::prefix('agunan')
+        ->name('agunan.')
+        ->controller(AgunanController::class)
+        ->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('show', 'show')->name('show');
+            Route::get('create/{pinjaman_id}', 'create')->name('create');
+            Route::post('store', 'store')->name('store');
+            Route::get('edit/{id}', 'edit')->name('edit');
+            Route::put('update/{id}', 'update')->name('update');
+            Route::delete('delete/{id}', 'destroy')->name('delete');
+            Route::get('download', 'download')->name('download');
         });
 
     // pinjaman route

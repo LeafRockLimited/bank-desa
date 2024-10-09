@@ -41,7 +41,7 @@ class PinjamanController extends Controller
         $nominalDiterima = $request->nominal_diterima;
         $jumlahPinjaman = $nominalDiterima + ($nominalDiterima * ($bunga/100));
 
-        Pinjaman::create([
+        $pinjaman = Pinjaman::create([
             'nasabah_id' => $request->nasabah_id,
             'jenis_pinjaman' => $request->jenis_pinjaman,
             'jumlah_pinjaman' => $jumlahPinjaman,
@@ -53,7 +53,8 @@ class PinjamanController extends Controller
             'status_pinjaman' => $request->status_pinjaman,
         ]);
 
-        return response()->json(['message' => 'Berhasil memproses pinjaman.']);
+        return to_route('agunan.create', ['pinjaman_id' => $pinjaman->id]);
+        // return response()->json(['message' => 'Berhasil memproses pinjaman.']);
 
     }
 
@@ -68,6 +69,7 @@ class PinjamanController extends Controller
         $month = $request->bulan??null;
         $status = $request->status??null;
         $nasabahId = $request->nasabah_id??null;
+        $jenisPinjaman = $request->jenis_pinjaman??null;
 
         $pinjaman = Pinjaman::with('nasabah')
         ->when($search, function($sub) use($search){
@@ -77,6 +79,9 @@ class PinjamanController extends Controller
         })
         ->when($status, function($sub) use($status){
             $sub->where('status_pinjaman',$status);
+        })
+        ->when($jenisPinjaman, function($sub) use($jenisPinjaman){
+            $sub->where('jenis_pinjaman',$jenisPinjaman);
         })
         ->when($nasabahId, function($sub) use($nasabahId){
             $sub->where('nasabah_id',$nasabahId);
