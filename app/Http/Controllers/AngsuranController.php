@@ -49,9 +49,7 @@ class AngsuranController extends Controller
                 'bunga' => 'required',
             ]);
 
-            $rekening = $this->getAngsuranRekening($angsuran);
-
-            
+            // $rekening = $this->getAngsuranRekening($angsuran);
 
             $pinjaman = Pinjaman::findOrFail($data['pinjaman_id']);
             $lastAngsuran = $pinjaman->last_angsuran;
