@@ -85,7 +85,7 @@ Route::middleware('auth')->group(function () {
             Route::get('show_rekap', 'show_rekap')->name('show_rekap')->middleware('checkPermission:view pinjaman');
             Route::get('create', 'create')->name('create')->middleware('checkPermission:create pinjaman');
             Route::post('store', 'store')->name('store')->middleware('checkPermission:create pinjaman');
-            Route::delete('delete/{id}', 'destroy')->name('delete')->middleware('checkPermission:delete pinjaman');
+            Route::delete('delete/{id}', 'destroy')->name('delete');
             Route::get('edit/{id}', 'edit')->name('edit')->middleware('checkPermission:edit pinjaman');
             Route::put('update/{id}', 'update')->name('update')->middleware('checkPermission:edit pinjaman');
             Route::get('download', 'download')->name('download')->middleware('checkPermission:view pinjaman');
