@@ -50,15 +50,15 @@ Route::middleware('auth')->group(function () {
         ->name('nasabah.')
         ->controller(NasabahController::class)
         ->group(function () {
-            Route::get('/', 'index')->name('index')->middleware('checkPermission:view nasabah');
-            Route::get('show', 'show')->name('show')->middleware('checkPermission:view nasabah');
-            Route::get('create', 'create')->name('create')->middleware('checkPermission:create nasabah');
-            Route::post('store', 'store')->name('store')->middleware('checkPermission:create nasabah');
-            Route::get('edit/{nasabah}', 'edit')->name('edit')->middleware('checkPermission:edit nasabah');
-            Route::put('update/{nasabah}', 'update')->name('update')->middleware('checkPermission:edit nasabah');
-            Route::delete('delete/{nasabah}', 'destroy')->name('delete')->middleware('checkPermission:delete nasabah');
-            Route::get('download', 'download')->name('download')->middleware('checkPermission:view nasabah');
-            Route::get('rekap_tahunan', 'rekap_tahunan')->name('rekap_tahunan')->middleware('checkPermission:view nasabah');
+            Route::get('/', 'index')->name('index');
+            Route::get('show', 'show')->name('show');
+            Route::get('create', 'create')->name('create');
+            Route::post('store', 'store')->name('store');
+            Route::get('edit/{nasabah}', 'edit')->name('edit');
+            Route::put('update/{nasabah}', 'update')->name('update');
+            Route::delete('delete/{nasabah}', 'destroy')->name('delete');
+            Route::get('download', 'download')->name('download');
+            Route::get('rekap_tahunan', 'rekap_tahunan')->name('rekap_tahunan');
         });
 
     Route::prefix('agunan')
@@ -80,30 +80,30 @@ Route::middleware('auth')->group(function () {
         ->name('pinjaman.')
         ->controller(PinjamanController::class)
         ->group(function () {
-            Route::get('/', 'index')->name('index')->middleware('checkPermission:view pinjaman');
-            Route::get('show', 'show')->name('show')->middleware('checkPermission:view pinjaman');
-            Route::get('show_rekap', 'show_rekap')->name('show_rekap')->middleware('checkPermission:view pinjaman');
+            Route::get('/', 'index')->name('index');
+            Route::get('show', 'show')->name('show');
+            Route::get('show_rekap', 'show_rekap')->name('show_rekap');
             Route::get('create', 'create')->name('create')->middleware('checkPermission:create pinjaman');
-            Route::post('store', 'store')->name('store')->middleware('checkPermission:create pinjaman');
+            Route::post('store', 'store')->name('store');
             Route::delete('delete/{id}', 'destroy')->name('delete');
-            Route::get('edit/{id}', 'edit')->name('edit')->middleware('checkPermission:edit pinjaman');
-            Route::put('update/{id}', 'update')->name('update')->middleware('checkPermission:edit pinjaman');
-            Route::get('download', 'download')->name('download')->middleware('checkPermission:view pinjaman');
-            Route::get('setting-pinjaman', 'setting_pinjaman')->name('setting_pinjaman');
+            Route::get('edit/{id}', 'edit')->name('edit');
+            Route::put('update/{id}', 'update')->name('update');
+            Route::get('download', 'download')->name('download');
+            Route::get('setting-pinjaman', 'setting_pinjaman');
         });
 
     Route::prefix('angsuran')
         ->name('angsuran.')
         ->controller(AngsuranController::class)
         ->group(function () {
-            Route::get('/', 'index')->name('index')->middleware('checkPermission:view angsuran');
-            Route::get('angsuran_terakhir/{id}', 'angsuran_terakhir')->name('angsuran_terakhir')->middleware('checkPermission:view angsuran');
-            Route::get('show', 'show')->name('show')->middleware('checkPermission:view angsuran');
-            Route::get('create', 'create')->name('create')->middleware('checkPermission:create angsuran');
-            Route::post('store', 'store')->name('store')->middleware('checkPermission:create angsuran');
-            Route::delete('delete/{id}', 'destroy')->name('delete')->middleware('checkPermission:delete angsuran');
-            Route::get('download', 'download')->name('download')->middleware('checkPermission:view angsuran');
-            Route::get('rekap_bulanan', 'rekap_bulanan')->name('rekap_bulanan')->middleware('checkPermission:view angsuran');
+            Route::get('/', 'index')->name('index');
+            Route::get('angsuran_terakhir/{id}', 'angsuran_terakhir')->name('angsuran_terakhir');
+            Route::get('show', 'show')->name('show');
+            Route::get('create', 'create')->name('create');
+            Route::post('store', 'store')->name('store');
+            Route::delete('delete/{id}', 'destroy')->name('delete');
+            Route::get('download', 'download')->name('download');
+            Route::get('rekap_bulanan', 'rekap_bulanan')->name('rekap_bulanan');
             Route::get('setting-angsuran', 'setting_angsuran')->name('setting_angsuran');
         });
 
