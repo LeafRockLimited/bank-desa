@@ -14,34 +14,26 @@ use Inertia\Inertia;
 class KodeRekeningController extends Controller
 {
     //
-    public function index($idJenisRekening)
-    {   
+    public function index(Request $request)
+    {
+        $search = $request->searchQuery;
+        $length = $request->length??10;
 
-        $jenisRekening = JenisRekening::find($idJenisRekening);
-        if (!isset($jenisRekening)) {
-            abort(404, 'Jenis Rekening tidak ditemukan');
-        }
-       
+        $kodeRekenings = KodeRekening::when($search,function($sub) use($search){
+            $sub->where('nama_rekening','ilike',"%$search%");
+            $sub->orWhere('nomor_rekening','ilike',"%$search%");
+        })->paginate($length)->withQueryString();
+
         return Inertia::render('KodeRekening/Index',[
-            'jenis_rekening' => $idJenisRekening
+            'rekening' => $kodeRekenings,
+            'search' => $search,
+            'length' => $length
         ]);
     }
 
-    public function create($jenis_rekening_id)
+    public function create()
     {
-        $jenisRekening = JenisRekening::find($jenis_rekening_id);
-        if (!isset($jenisRekening)) {
-            abort(404, 'Jenis Rekening tidak ditemukan');
-        }
 
-        $tipe = KodeRekening::select('tipe')->groupBy('tipe')->get();
-        $subTipe = KodeRekening::select('sub_tipe')->groupBy('sub_tipe')->get();
-
-        return Inertia::render('KodeRekening/Create',[
-            'jenis_rekening' => $jenisRekening,
-            'tipe' => $tipe,
-            'sub_tipe' => $subTipe
-        ]);
     }
 
     public function edit($kodeRekeningId){
@@ -54,11 +46,11 @@ class KodeRekeningController extends Controller
 
     public function show(Request $request, $jenisRekening = null){
 
-    
+
         try {
             $search = $request->searchQuery;
             $length = $request->length??10;
-            
+
             $kodeRekenings = KodeRekening::when($search,function($sub) use($search){
                 $sub->where('nomor_rekening','ilike',"%$search%")
                 ->orWhere('nama_kode_rekening','ilike',"%$search%");
@@ -75,7 +67,7 @@ class KodeRekeningController extends Controller
             return response()->json([
                 'message' => $th->getMessage()
             ],500);
-        }   
+        }
     }
 
     public function store(StoreKodeRekeningRequest $request){
@@ -89,14 +81,14 @@ class KodeRekeningController extends Controller
         }
     }
 
-    public function update(StoreKodeRekeningRequest $request, $id) {
+    public function update(UpdateKodeRekeningRequest $request, $id) {
         $validated = $request->validated();
-        
+
         try {
             $kodeRekening = KodeRekening::findOrFail($id);
             $kodeRekening->update($validated);
             $kodeRekening->save();
-            
+
             return response()->json('Berhasil Memperbarui Kode Rekening');
         } catch (\Throwable $th) {
             Log::error($th->getMessage());

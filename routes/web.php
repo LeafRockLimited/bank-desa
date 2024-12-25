@@ -111,29 +111,14 @@ Route::middleware('auth')->group(function () {
         ->name('kode_rekening.')
         ->controller(KodeRekeningController::class)
         ->group(function () {
-            Route::get('/index/{jenis_rekening}', 'index')->name('index');
-            Route::get('show/{jenis_rekening?}', 'show')->name('show');
-            Route::get('create/{jenis_rekening}', 'create')->name('create');
-            Route::post('store', 'store')->name('store');
-            Route::get('edit/{id}', 'edit')->name('edit');
-            Route::put('update/{id}', 'update')->name('update');
-            Route::delete('delete/{id}', 'destroy')->name('delete');
-        });
-
-    Route::prefix('jenis_rekening')
-        ->name('jenis_rekening.')
-        ->controller(JenisRekeningController::class)
-        ->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('show', 'show')->name('show');
-            Route::get('show_all', 'show_all')->name('show_all');
             Route::get('create', 'create')->name('create');
             Route::post('store', 'store')->name('store');
             Route::get('edit/{id}', 'edit')->name('edit');
             Route::put('update/{id}', 'update')->name('update');
             Route::delete('delete/{id}', 'destroy')->name('delete');
         });
-
 
     Route::prefix('buku_besar')
         ->name('buku_besar.')

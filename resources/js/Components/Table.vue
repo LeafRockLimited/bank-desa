@@ -5,18 +5,21 @@
 
         <div class="flex flex-row space-x-3 px-3 items-start">
 
-            <select v-model="lengthData" class="md:w-20 bg-gray-50 border border-gray-300 text-gray-900 
-            text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 
+            <select v-model="lengthData" class="md:w-20 bg-gray-50 border border-gray-300 text-gray-900
+            text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500
              p-2.5">
                 <option v-show="item == 10 || item % 25 == 0" v-for="(item, index) in 100" :key="index">
                     <div>{{ item }}</div>
                 </option>
             </select>
-            
+
             <slot name="filter"></slot>
         </div>
 
-        <input type="text" v-model="searchQuery" placeholder="Cari..." class="border rounded-lg w-fit" />
+        <div class="flex flex-row space-x-2">
+            <input type="text" v-model="searchQuery" placeholder="Cari..." class="border rounded-lg w-fit" />
+            <slot name="action"></slot>
+        </div>
     </div>
 
     <!-- Tabel -->
@@ -66,15 +69,15 @@
 
 
 
-    <div class="grid grid-cols-1 lg:flex lg:flex-row lg:justify-between">
+    <div v-if="withPagination" class="grid grid-cols-1 lg:flex lg:flex-row lg:justify-between">
         <span>Menampilkan data {{ startRow }} - {{ endRow }} dari {{ totalData }}</span>
         <nav aria-label="Page navigation example">
             <ul class="inline-flex -space-x-px text-base h-10">
                 <li v-for="(item, index) in links" :key="index">
-                    <div @click="clickPage(item.page)" class="flex items-center justify-center 
-                    px-4 h-10 ms-0 leading-tight text-gray-500 bg-white 
-                    border border-gray-300 
-                    hover:bg-gray-100 
+                    <div @click="clickPage(item.page)" class="flex items-center justify-center
+                    px-4 h-10 ms-0 leading-tight text-gray-500 bg-white
+                    border border-gray-300
+                    hover:bg-gray-100
                     hover:text-gray-700 cursor-pointer" :class="{
                         'rounded-s-lg': index == 0,
                         'rounded-r-lg': index == links.length - 1,
@@ -95,15 +98,22 @@
 import DangerButton from '@/Components/DangerButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import Toast from '@/Toast';
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 export default {
     components: {
+        PrimaryButton,
         DangerButton, SecondaryButton
     },
     props: {
+        withPagination: {
+            type: Boolean,
+            default: true
+        },
         headers: Array,
         data: Array,
         links: Array,
         lengthProps: Number,
+        searchProps: String,
         deleteData: {
             type: Boolean,
             default: false
@@ -146,12 +156,12 @@ export default {
                 return item
             })
             return links
-        }
+        },
     },
     data() {
         return {
             lengthData: this.lengthProps ?? 10,
-            searchQuery: null
+            searchQuery: this.searchProps ?? '',
         }
     },
     watch: {
@@ -187,7 +197,7 @@ export default {
                     icon: 'success',
                     title: 'Data berhasil di hapus',
                 })
-
+                this.$emit('action-success', data);
                 this.refreshData()
             } catch (error) {
                 Toast.fire({

@@ -21,11 +21,20 @@ class UpdateKodeRekeningRequest extends FormRequest
      */
     public function rules(): array
     {
+
         return [
-            //
-            'kode_rekening' => ['string', 'max:255'],
-            'jenis_saldo' => ['string', 'max:255'],
-            'nama_kode_rekening' => ['string', 'max:255'],
+            'nomor_rekening' => 'required',
+            'nama_rekening' => 'required',
+            'saldo_normal' => 'required|in:debit,kredit',
+            'deskripsi' => 'nullable',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'required' => ':attribute wajib diisi',
+            'in' => ':attribute salah'
         ];
     }
 }
