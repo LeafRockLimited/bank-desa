@@ -120,6 +120,19 @@ Route::middleware('auth')->group(function () {
             Route::delete('delete/{id}', 'destroy')->name('delete');
         });
 
+    Route::prefix('jurnal')
+        ->name('jurnal.')
+        ->controller(\App\Http\Controllers\JurnalController::class)
+        ->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('show', 'show')->name('show');
+            Route::get('create', 'create')->name('create');
+            Route::post('store', 'store')->name('store');
+            Route::get('edit/{id}', 'edit')->name('edit');
+            Route::put('update/{id}','update')->name('update');
+            Route::delete('delete/{id}', 'destroy')->name('delete'); // Menghapus transaksi
+        });
+
     Route::prefix('buku_besar')
         ->name('buku_besar.')
         ->controller(BukuBesarController::class)
