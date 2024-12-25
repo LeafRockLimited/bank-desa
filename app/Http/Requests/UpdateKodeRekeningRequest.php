@@ -25,7 +25,7 @@ class UpdateKodeRekeningRequest extends FormRequest
         return [
             'nomor_rekening' => 'required',
             'nama_rekening' => 'required',
-            'saldo_normal' => 'required|in:debit,kredit',
+            'saldo_normal' => 'required|in:Debit,Kredit',
             'deskripsi' => 'nullable',
         ];
     }

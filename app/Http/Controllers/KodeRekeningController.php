@@ -33,7 +33,7 @@ class KodeRekeningController extends Controller
 
     public function create()
     {
-
+        return Inertia::render('KodeRekening/Create');
     }
 
     public function edit($kodeRekeningId){

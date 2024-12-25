@@ -11,7 +11,7 @@
         <CardBody>
             <template v-slot:content>
                 <div class="grid grid-cols-1 gap-6">
-                    
+
                     <div class=" w-full">
                         <p class="text-lg font-bold">Isi form kode rekening</p>
                         <p>Isi formulir kode rekening baru</p>
@@ -24,7 +24,7 @@
                             <input id="nomor_rekening" v-model="form.nomor_rekening" type="text"
                                 @input="formatNumber($event)"
                                 class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                :placeholder="jenis_rekening.id + '.x.x.x...'" />
+                                :placeholder="'.x.x.x...'" />
                             <p v-if="errors.nomor_rekening" class="text-red-600 text-sm mt-1">{{ errors.nomor_rekening[0] }}</p>
                         </div>
 
@@ -40,16 +40,8 @@
 
                         <!-- Tipe Akun -->
                         <div class="">
-                            <label for="tipe" class="block text-sm font-medium text-gray-700">Tipe Akun</label>
-                            <v-select v-model="form.tipe" taggable :options="tipeList">
-                            </v-select>
-                            <p v-if="errors.tipe" class="text-red-600 text-sm mt-1">{{ errors.tipe[0] }}</p>
-                        </div>
-
-                        <!-- Tipe Akun -->
-                        <div class="">
-                            <label for="tipe" class="block text-sm font-medium text-gray-700">Sub Tipe Akun</label>
-                            <v-select v-model="form.sub_tipe" taggable :options="subTipeList">
+                            <label for="tipe" class="block text-sm font-medium text-gray-700">Saldo Normal</label>
+                            <v-select v-model="form.saldo_normal" taggable :options="['Debit','Kredit']">
                             </v-select>
                             <p v-if="errors.sub_tipe" class="text-red-600 text-sm mt-1">{{ errors.sub_tipe[0] }}</p>
                         </div>
@@ -89,24 +81,21 @@ import CardBody from '@/Components/CardBody.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Toast from '@/Toast';
 import axios from 'axios';
+import NumberFormating from "@/Service/NumberFormating.js";
 
 export default {
     components: {
         AuthenticatedLayout, Head, Link, CardBody, PrimaryButton
     },
     props: {
-        jenis_rekening: Object,
-        tipe:Array,
-        sub_tipe:Array
+
     },
     data() {
         return {
             form: useForm({
-                jenis_rekening_id: this.jenis_rekening.id,
                 nomor_rekening: null,
                 nama_rekening: null,
-                tipe: null,
-                sub_tipe: null,
+                saldo_normal: null,
                 status: 'aktif',
                 deskripsi: null,
             }),
@@ -117,41 +106,17 @@ export default {
     },
     computed: {
         tipeList(){
-            return this.tipe.map((item)=>{
-                return {
-                    'label' : item.tipe,
-                    'code' : item.tipe
-                }
-            })
+            return []
         },
         subTipeList(){
-            return this.sub_tipe.map((item)=>{
-                return {
-                    'label' : item.sub_tipe,
-                    'code' : item.sub_tipe
-                }
-            })
+           return []
         }
     },
     methods: {
         formatNumber(event) {
-            let rawNumber = event.target.value.replace(/\D/g, ''); // Menghapus semua karakter non-digit
-            let formatted = [];
-            let startIndex = 0;
-            let blockIndex = 0; // Index untuk mengulang array blockSizes
-
-            while (startIndex < rawNumber.length) {
-                const size = this.blockSizes[blockIndex % this.blockSizes.length];
-                const block = rawNumber.substr(startIndex, size);
-                
-                if (block) {
-                    formatted.push(block);
-                }
-                startIndex += size;
-                blockIndex++; 
-            }
-
-            this.form.nomor_rekening = formatted.join(this.separator);
+            const value = event.target.value;
+            const formatRekening = NumberFormating.rekeningFormat(value)
+            this.form.nomor_rekening = formatRekening;
         },
         async submit() {
             try {
@@ -160,7 +125,7 @@ export default {
                     icon: 'success',
                     title: 'Data Berhasil disimpan',
                 });
-                this.$inertia.visit(route('kode_rekening.index', { jenis_rekening: this.jenis_rekening.id }));
+                this.$inertia.visit(route('kode_rekening.index'));
             } catch (error) {
                 if (error.response.status === 422) {
                     this.errors = error.response.data.errors;
