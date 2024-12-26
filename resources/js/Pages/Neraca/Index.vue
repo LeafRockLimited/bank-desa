@@ -129,6 +129,7 @@ export default {
                 item.neraca_kredit = Helper.rupiah(item.neraca_kredit)
                 item.saldo_debit = Helper.rupiah(item.saldo_debit)
                 item.saldo_kredit = Helper.rupiah(item.saldo_kredit)
+                item.jumlah = Helper.rupiah(item.jumlah)
                 return item
             })??[]
         }

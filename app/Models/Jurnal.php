@@ -32,7 +32,13 @@ class Jurnal extends Model
             if (is_null($jurnal->debit) || $jurnal->debit == '') {
                 $jurnal->debit = 0;
             }
-            $jurnal->jumlah = $jurnal->debit - $jurnal->kredit;
+
+            $rekening = KodeRekening::find($jurnal->id_rekening);
+            if($rekening->saldo_normal == 'Debit'){
+                $jurnal->jumlah = $jurnal->debit - $jurnal->kredit;
+            }else{
+                $jurnal->jumlah = $jurnal->kredit - $jurnal->debit;
+            }
         });
 
         static::updating(function ($jurnal) {
@@ -42,7 +48,12 @@ class Jurnal extends Model
             if (is_null($jurnal->debit) || $jurnal->debit == '') {
                 $jurnal->debit = 0;
             }
-            $jurnal->jumlah = $jurnal->debit - $jurnal->kredit;
+            $rekening = KodeRekening::find($jurnal->id_rekening);
+            if($rekening->saldo_normal == 'Debit'){
+                $jurnal->jumlah = $jurnal->debit - $jurnal->kredit;
+            }else{
+                $jurnal->jumlah = $jurnal->kredit - $jurnal->debit;
+            }
         });
     }
 
