@@ -28,6 +28,25 @@
                             <p v-if="errors.nomor_rekening" class="text-red-600 text-sm mt-1">{{ errors.nomor_rekening[0] }}</p>
                         </div>
 
+
+                        <!-- level group input-->
+                        <div :class="`grid grid-flow-row grid-cols-6 gap-6 items-end`">
+                            <div v-for="(item, index) in rekeningLevelsInput" :key="index">
+                                <label :for="`level_one_${index+1}`" class="block text-sm font-medium text-gray-700">Kode {{item.kode_level}}</label>
+                                <input :id="`levels_${index+1}`" v-model="item.uraian" @input="(event) => {
+                                    if(event.target.value && event.target.value != ''){
+                                        rekeningLevelsInput[index].uraian = event.target.value
+                                        return;
+                                    }
+                                    return;
+                                }" type="text"
+                                       class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                       :placeholder="`Uraian level ${index+1}`"
+                                />
+                            </div>
+                        </div>
+                        <!-- end level group input-->
+
                         <!-- Nama Rekening -->
                         <div class="">
                             <label for="nama_rekening" class="block text-sm font-medium text-gray-700">Nama Rekening</label>
@@ -102,6 +121,7 @@ export default {
             errors: {},
             blockSizes: [1], // Ukuran setiap blok dalam array
             separator: '.',
+            rekeningLevelsInput: []
         }
     },
     computed: {
@@ -110,6 +130,23 @@ export default {
         },
         subTipeList(){
            return []
+        },
+
+    },
+    watch: {
+        'form.nomor_rekening': {
+            deep: true,
+            handler(value) {
+                const numberArray = value?.split('.')?.map((level, index) => {
+
+                    return {
+                        'kode_level' : level,
+                        'uraian' : null
+                    }
+                })
+                this.rekeningLevelsInput = numberArray
+                this.getLevel(numberArray)
+            }
         }
     },
     methods: {
@@ -120,6 +157,18 @@ export default {
         },
         async submit() {
             try {
+                const strNum = ['one','two','three','four','five','six']
+
+                for (let index = 0; index < this.rekeningLevelsInput.length; index++) {
+                    const element = this.rekeningLevelsInput[index];
+
+                    if(index < 6){
+                        this.form['level_'+strNum[index]] = element.kode_level
+                        this.form['uraian_level_'+strNum[index]] = element.uraian
+                    }
+                }
+
+
                 await axios.post(route('kode_rekening.store'), this.form);
                 Toast.fire({
                     icon: 'success',
@@ -135,6 +184,22 @@ export default {
                     title: 'Data gagal disimpan',
                 });
             }
+        },
+        async getLevel(rekening){
+            let getLevelHistory = await axios.get(route('kode_rekening.level_data'), {
+                params: {
+                    rekening: rekening
+                }
+            })
+
+            const levels = getLevelHistory.data
+
+            for (let index = 0; index < levels.length; index++) {
+                const element = levels[index];
+                this.rekeningLevelsInput[index].uraian = element
+            }
+            console.log(this.rekeningLevelsInput)
+
         }
     }
 }

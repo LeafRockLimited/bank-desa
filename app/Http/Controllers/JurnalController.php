@@ -147,7 +147,6 @@ class JurnalController extends Controller
                     'message' => 'Jurnal berhasil diupdate'
                 ]);
             }catch (\Throwable $th) {
-                dd($th);
                 DB::rollBack();
                 return response()->json([
                     'success' => false,

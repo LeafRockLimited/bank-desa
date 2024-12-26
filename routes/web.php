@@ -113,6 +113,7 @@ Route::middleware('auth')->group(function () {
         ->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('show', 'show')->name('show');
+            Route::get('level_data', 'level_data')->name('level_data');
             Route::get('create', 'create')->name('create');
             Route::post('store', 'store')->name('store');
             Route::get('edit/{id}', 'edit')->name('edit');

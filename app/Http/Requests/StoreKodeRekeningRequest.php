@@ -26,6 +26,18 @@ class StoreKodeRekeningRequest extends FormRequest
             'nama_rekening' => 'required',
             'saldo_normal' => 'required|in:Debit,Kredit',
             'deskripsi' => 'nullable',
+            'level_one' => 'nullable',
+            'uraian_level_one' => 'nullable',
+            'level_two' => 'nullable',
+            'uraian_level_two' => 'nullable',
+            'level_three' => 'nullable',
+            'uraian_level_three' => 'nullable',
+            'level_four' => 'nullable',
+            'uraian_level_four' => 'nullable',
+            'level_five' => 'nullable',
+            'uraian_level_five' => 'nullable',
+            'level_six' => 'nullable',
+            'uraian_level_six' => 'nullable',
         ];
     }
 

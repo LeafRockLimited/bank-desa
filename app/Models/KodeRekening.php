@@ -14,6 +14,18 @@ class KodeRekening extends Model
         'nama_rekening',
         'saldo_normal',
         'deskripsi',
+        'level_one',
+        'uraian_level_one',
+        'level_two',
+        'uraian_level_two',
+        'level_three',
+        'uraian_level_three',
+        'level_four',
+        'uraian_level_four',
+        'level_five',
+        'uraian_level_five',
+        'level_six',
+        'uraian_level_six',
     ];
 
     public function bukuBesars()

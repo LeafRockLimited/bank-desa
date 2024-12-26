@@ -36,6 +36,24 @@ class KodeRekeningController extends Controller
         return Inertia::render('KodeRekening/Create');
     }
 
+    public function level_data(Request $request){
+        $data = $request->rekening;
+
+        $kodeRekenings = KodeRekening::query();
+        $strNum = ['one','two','three','four','five','six'];
+
+        $levelData = [];
+        foreach ($data as $key => $value) {
+            $kodeRekenings->where('level_'.$strNum[$key],$value['kode_level']);
+            $level_name = $kodeRekenings->first();
+            if ($level_name) {
+
+                $levelData[] = $level_name['uraian_level_'.$strNum[$key]];
+            }
+        }
+        return response()->json($levelData);
+    }
+
     public function edit($kodeRekeningId){
         $kodeRekening = KodeRekening::findOrFail($kodeRekeningId);
         return Inertia::render('KodeRekening/Edit',[
