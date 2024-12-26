@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\BukuBesarTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -38,5 +39,10 @@ class Jurnal extends Model
     public function rekening()
     {
         return $this->belongsTo(KodeRekening::class, 'id_rekening', 'id');
+    }
+
+    public function buku_besar()
+    {
+        return $this->hasOne(BukuBesar::class, 'id_jurnal', 'id');
     }
 }

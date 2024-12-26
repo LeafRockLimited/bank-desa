@@ -1,9 +1,9 @@
 <template>
 <div class="p-4">
     <!-- Input untuk pencarian -->
-    <div class="flex flex-row items-start justify-between mb-4">
+    <div class="flex flex-row items-end justify-between mb-4">
 
-        <div class="flex flex-row space-x-3 px-3 items-start">
+        <div class="flex flex-row space-x-3 px-3 items-end w-full">
 
             <select v-model="lengthData" class="md:w-20 bg-gray-50 border border-gray-300 text-gray-900
             text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500

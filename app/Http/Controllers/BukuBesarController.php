@@ -17,13 +17,34 @@ class BukuBesarController extends Controller
      */
     public function index(Request $request)
     {
+        $search = $request->searchQuery;
+        $length = $request->lengthQuery??10;
+
+        $kodeRekenings = KodeRekening::all();
+        $selectedKodeRekening = $request->rekeningQuery??$kodeRekenings->first()->id;
+
+        $bukuBesars = BukuBesar::with('rekening','jurnal')
+            ->when($search, function($sub) use($search){
+                $sub->whereHas('jurnal',function($subJurnal) use($search){
+                    $subJurnal->where('keterangan','ilike',"%$search%");
+                });
+            })
+            ->when($selectedKodeRekening, function($sub) use($selectedKodeRekening){
+                $sub->where('id_rekening', $selectedKodeRekening);
+            })
+            ->where('id_rekening', $selectedKodeRekening)->paginate($length)
+        ->withQueryString();
         // Return data ke view dengan Inertia::render
         return Inertia::render('BukuBesar/Index', [
-            'jenis_rekening' => KodeRekening::all(), // Atau data lain yang diperlukan
+            'rekening' => $kodeRekenings, // Atau data lain yang diperlukan
+            'buku_besar' => $bukuBesars,
+            'rekening_props' => $selectedKodeRekening,
+            'length' => $length,
+            'search' => $search
         ]);
     }
 
-    
+
     /**
      * Menampilkan halaman untuk menambah transaksi buku besar.
      *
@@ -72,9 +93,9 @@ class BukuBesarController extends Controller
         $validated = $request->validated();
 
         try {
-        
+
         BukuBesar::create($validated);
-        
+
         // Redirect ke halaman index dengan pesan sukses
         return response()->json('Berhasil Menambahkan Transaksi Buku Besar', 200);
         } catch (\Throwable $th) {
@@ -116,7 +137,7 @@ class BukuBesarController extends Controller
         ]);
 
         try {
-            
+
         $bukuBesar = BukuBesar::find($id);
         $bukuBesar->update($validated);
 

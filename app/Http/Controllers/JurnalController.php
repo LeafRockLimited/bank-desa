@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\BukuBesarTrait;
 use App\Http\Requests\StroreJurnalRequest;
 use App\Http\Requests\UpdateJurnalRequest;
 use App\Models\Jurnal;
@@ -9,11 +10,14 @@ use App\Models\KeteranganTransaksiJurnal;
 use App\Models\KodeRekening;
 use App\Models\KomponenLak;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class JurnalController extends Controller
 {
+
+    use BukuBesarTrait;
     /**
      * Display a listing of the resource.
      */
@@ -56,9 +60,9 @@ class JurnalController extends Controller
     public function store(StroreJurnalRequest $request)
     {
         $jurnal = $request->validated();
-
         $keterangan = KeteranganTransaksiJurnal::where('name',$jurnal['keterangan'])->first();
 
+        DB::beginTransaction();
         try {
             if (!$keterangan) {
                 KeteranganTransaksiJurnal::create(['name' => $jurnal['keterangan']]);
@@ -69,12 +73,17 @@ class JurnalController extends Controller
                 KomponenLak::create(['name' => $jurnal['komponen_lak']]);
             }
 
-            Jurnal::create($jurnal);
+            $jurnal = Jurnal::create($jurnal);
+
+            $this->createBukuBesar($jurnal);
+
+            DB::commit();
             return response()->json([
                 'success' => true,
                 'message' => 'Jurnal berhasil ditambahkan'
             ]);
         }catch (\Throwable $th) {
+            DB::rollBack();
             return response()->json([
                 'success' => false,
                 'error' => $th,
