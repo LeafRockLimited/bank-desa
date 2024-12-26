@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Neraca;
 use App\NeracaTrait;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -14,13 +15,20 @@ class NeracaController extends Controller
 
     /**
      * Menampilkan halaman rekap neraca.
-     * 
+     *
      * @return \Inertia\Response
      */
-    public function index(){
-        return Inertia::render('Neraca/Index');
+    public function index(Request $request){
+        $search = $request->searchQuery;
+        $length = $request->length??10;
+        $neracas = Neraca::with('rekening')->paginate($length)->withQueryString();
+        return Inertia::render('Neraca/Index',[
+            'neracas' => $neracas,
+            'search' => $search,
+            'length' => $length
+        ]);
     }
-    
+
     /**
      * Mendapatkan rekap neraca berdasarkan tahun yang diinputkan melalui request.
      * Jika tahun tidak diinputkan, maka akan menggunakan tahun sekarang.

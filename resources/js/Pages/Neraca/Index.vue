@@ -23,9 +23,9 @@
                     :links="links"
                     :totalData="totalData"
                     :endRow="endRow"
-                    @refreshed-data="()=>{
-                        getData();
-                    }"
+                    :with-pagination=false
+                    :searchProps="searchQuery"
+
                     @click-page="(value) => {
                         page = value
                     }"
@@ -44,8 +44,29 @@
                         <TahunFilter
                         @on-change="(value)=>{selectedYear = value}"/>
                     </template>
-
+                        <template v-slot:action="{item}">
+                            <PrimaryButton @click="requestData">Cari</PrimaryButton>
+                        </template>
                     </Table>
+                </div>
+                <div class="grid grid-cols-1 lg:flex lg:flex-row lg:justify-between">
+                    <span>Menampilkan data {{ startRow }} - {{ endRow }} dari {{ totalData }}</span>
+                    <nav aria-label="Page navigation example">
+                        <ul class="inline-flex -space-x-px text-base h-10">
+                            <li v-for="(item, index) in links" :key="index">
+                                <div @click="requestData" class="flex items-center justify-center
+                        px-4 h-10 ms-0 leading-tight text-gray-500 bg-white
+                        border border-gray-300
+                        hover:bg-gray-100
+                        hover:text-gray-700 cursor-pointer" :class="{
+                            'rounded-s-lg': index == 0,
+                            'rounded-r-lg': index == links.length - 1,
+                        }">
+                                    <span v-html="item.label"></span>
+                                </div>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
             </template>
         </CardBody>
@@ -61,36 +82,55 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import axios from 'axios';
 import Helper from '@/Helper';
 import TahunFilter from '@/Components/TahunFilter.vue';
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 export default {
     components: {
+        PrimaryButton,
         AuthenticatedLayout, Head, Link, Table, CardBody, SecondaryButton,
         TahunFilter
     },
+    props: {
+        'neracas': Object,
+        'tahun': Number,
+        'bulan': Number,
+        'search': String,
+        'length': Number
+    },
     data() {
         return {
-            selectedYear: new Date().getFullYear(),  // Default tahun saat ini
+            selectedYear: this.tahun,  // Default tahun saat ini
             page: 1,
-            length: 10,
+            lengthQuery: this.length,
             responseData:{},
-            tableData: [],
-            searchQuery: null,
+            searchQuery: this.search,
         };
     },
     computed: {
         startRow() {
-            return this.responseData.from??0
+            return this.neracas.from??0
         },
         endRow() {
-            return this.responseData.to??0
+            return this.neracas.to??0
         },
         headers(){
-            return ['kode_rekening','nama_rekening','total_debit','total_kredit','total_saldo']
+            return ['rekening.nomor_rekening','rekening.nama_rekening','neraca_debit','neraca_kredit','saldo_debit','saldo_kredit','jumlah']
         },
         links(){
-            return this.responseData.links??[]
+            return this.neracas.links??[]
         },
         totalData(){
-            return this.responseData.total??0
+            return this.neracas.total??0
+        },
+        tableData(){
+            const data = JSON.parse(JSON.stringify(this.neracas.data))
+
+                return data?.map((item) => {
+                item.neraca_debit = Helper.rupiah(item.neraca_debit)
+                item.neraca_kredit = Helper.rupiah(item.neraca_kredit)
+                item.saldo_debit = Helper.rupiah(item.saldo_debit)
+                item.saldo_kredit = Helper.rupiah(item.saldo_kredit)
+                return item
+            })??[]
         }
     },
     watch: {
@@ -111,32 +151,13 @@ export default {
         }
     },
     methods: {
-        getData() {
-            console.log(this.length)
-            // Mengambil data rekap neraca berdasarkan tahun yang dipilih
-            axios.get(route('neraca.show', {
+        requestData() {
+            this.$inertia.get(route('neraca.index'), {
                 page: this.page,
-                length : this.length,
-                search: this.searchQuery,
-                tahun: this.selectedYear
-            })).then(response => {
-                this.responseData = response.data;
-                this.tableData = response.data.data.map(item => ({
-                    kode_rekening: item.kode_rekening,
-                    nama_rekening: item.nama_rekening,
-                    total_debit: Helper.rupiah(item.total_debit),
-                    total_kredit: Helper.rupiah(item.total_kredit),
-                    total_saldo: Helper.rupiah(item.total_saldo),
-                    kode_rekening_id: item.kode_rekening_id  // Untuk navigasi ke halaman detail
-                }));
-            }).catch(error => {
-                console.error('Error fetching neraca data:', error);
+                length: this.length,
+                searchQuery: this.searchQuery,
             });
-        },
+        }
     },
-    mounted() {
-        // this.fetchAvailableYears();
-        this.getData();
-    }
 }
 </script>
