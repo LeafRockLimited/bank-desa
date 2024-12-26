@@ -86,6 +86,7 @@ class JurnalController extends Controller
                 'message' => 'Jurnal berhasil ditambahkan'
             ]);
         }catch (\Throwable $th) {
+            dd($th);
             DB::rollBack();
             return response()->json([
                 'success' => false,
@@ -126,19 +127,35 @@ class JurnalController extends Controller
      */
     public function update(UpdateJurnalRequest $request, int $id)
     {
-        $jurnal = $request->validated();
-        try {
-            Jurnal::where('id', $id)->update($jurnal);
-            return response()->json([
-                'success' => true,
-                'message' => 'Jurnal berhasil diupdate'
-            ]);
-        }catch (\Throwable $th) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Jurnal gagal diupdate'
-            ],500);
-        }
+            $data = $request->validated();
+            DB::beginTransaction();
+            try {
+                $jurnal = Jurnal::find($id);
+                if($jurnal){
+                    $oldJurnal = $jurnal->replicate();
+                }
+
+                $jurnal->update($data);
+
+                $this->updateBukuBesar($jurnal);
+
+                $this->updateNeraca($oldJurnal, $jurnal);
+
+                DB::commit();
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Jurnal berhasil diupdate'
+                ]);
+            }catch (\Throwable $th) {
+                dd($th);
+                DB::rollBack();
+                return response()->json([
+                    'success' => false,
+                    'error' => $th,
+                    'message' => 'Jurnal gagal diupdate'
+                ],500);
+            }
+
     }
 
     /**

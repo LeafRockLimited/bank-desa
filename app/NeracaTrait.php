@@ -26,11 +26,10 @@ trait NeracaTrait
               $newNeraca->tahun = $neraca->tahun??date('Y',strtotime($jurnal->tanggal_transaksi));
               $newNeraca->bulan = $neraca->bulan??date('m',strtotime($jurnal->tanggal_transaksi));
           }
+          $newNeraca->neraca_debit = isset($neracaThisPeriode->neraca_debit) ? $neracaThisPeriode->neraca_debit + $jurnal->debit : $jurnal->debit;
+          $newNeraca->neraca_kredit = isset($neracaThisPeriode->neraca_kredit)? $neracaThisPeriode->neraca_kredit + $jurnal->kredit : $jurnal->kredit;
 
-          $newNeraca->neraca_debit = $neracaThisPeriode->neraca_debit != null ? $neracaThisPeriode->neraca_debit + $jurnal->debit : $jurnal->debit;
-          $newNeraca->neraca_kredit = $neracaThisPeriode->neraca_kredit != null ? $neracaThisPeriode->neraca_kredit + $jurnal->kredit : $jurnal->kredit;
-
-          $neraca = $this->neracaOperation($newNeraca, $neracaThisPeriode, $jurnal);
+          $neraca = $this->neracaOperation($newNeraca, $neracaThisPeriode??$newNeraca, $jurnal);
           $neraca->save();
 
           DB::commit();
@@ -42,8 +41,25 @@ trait NeracaTrait
 
   }
 
-  public function updateNeraca(Jurnal $jurnal){
+  public function updateNeraca(Jurnal $oldJurnal, Jurnal $newJurnal){
+    DB::beginTransaction();
+      try {
+          DB::statement('LOCK TABLE neracas IN EXCLUSIVE MODE');
+          $debit = $newJurnal->debit - $oldJurnal->debit;
+          $kredit = $newJurnal->kredit - $oldJurnal->kredit;
 
+          $currentNeraca = $this->getNeracaPeriod($oldJurnal);
+          $currentNeraca->neraca_debit = $currentNeraca->neraca_debit + $debit;
+          $currentNeraca->neraca_kredit = $currentNeraca->neraca_kredit + $kredit;
+
+          $neraca = $this->neracaOperation($currentNeraca, $currentNeraca, $newJurnal);
+          $neraca->save();
+            DB::commit();
+      }
+      catch (Throwable $th) {
+          DB::rollBack();
+          throw $th;
+      }
   }
 
   public function deleteNeraca(Jurnal $jurnal){

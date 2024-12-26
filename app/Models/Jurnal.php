@@ -34,6 +34,16 @@ class Jurnal extends Model
             }
             $jurnal->jumlah = $jurnal->debit - $jurnal->kredit;
         });
+
+        static::updating(function ($jurnal) {
+            if (is_null($jurnal->kredit) || $jurnal->kredit == '') {
+                $jurnal->kredit = 0;
+            }
+            if (is_null($jurnal->debit) || $jurnal->debit == '') {
+                $jurnal->debit = 0;
+            }
+            $jurnal->jumlah = $jurnal->debit - $jurnal->kredit;
+        });
     }
 
     public function rekening()
