@@ -9,6 +9,7 @@ use App\Models\Jurnal;
 use App\Models\KeteranganTransaksiJurnal;
 use App\Models\KodeRekening;
 use App\Models\KomponenLak;
+use App\NeracaTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -17,7 +18,7 @@ use Inertia\Response;
 class JurnalController extends Controller
 {
 
-    use BukuBesarTrait;
+    use BukuBesarTrait, NeracaTrait;
     /**
      * Display a listing of the resource.
      */
@@ -76,6 +77,8 @@ class JurnalController extends Controller
             $jurnal = Jurnal::create($jurnal);
 
             $this->createBukuBesar($jurnal);
+
+            $this->createNeracaPeriodic($jurnal);
 
             DB::commit();
             return response()->json([
@@ -143,7 +146,9 @@ class JurnalController extends Controller
      */
     public function destroy(int $id)
     {
-        Jurnal::where('id', $id)->delete();
+        $jurnal = Jurnal::where('id', $id)->first();
+        $this->deleteNeraca($jurnal);
+        $jurnal->delete();
         return response()->json(['message' => 'Jurnal berhasil dihapus.']);
     }
 }
