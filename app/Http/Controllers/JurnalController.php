@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\BukuBesarTrait;
 use App\Http\Requests\StroreJurnalRequest;
 use App\Http\Requests\UpdateJurnalRequest;
+use App\LabaRugiTrait;
 use App\Models\Jurnal;
 use App\Models\KeteranganTransaksiJurnal;
 use App\Models\KodeRekening;
@@ -18,7 +19,7 @@ use Inertia\Response;
 class JurnalController extends Controller
 {
 
-    use BukuBesarTrait, NeracaTrait;
+    use BukuBesarTrait, NeracaTrait, LabaRugiTrait;
     /**
      * Display a listing of the resource.
      */
@@ -79,6 +80,8 @@ class JurnalController extends Controller
             $this->createBukuBesar($jurnal);
 
             $this->createNeracaPeriodic($jurnal);
+
+            $this->createLabaRugi($jurnal);
 
             DB::commit();
             return response()->json([
