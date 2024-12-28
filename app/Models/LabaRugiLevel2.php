@@ -18,4 +18,8 @@ class LabaRugiLevel2 extends Model
         'total_this_month',
         'total_till_this_month'
     ];
+
+    public function level_3(){
+        return $this->hasMany(LabaRugiLevel3::class,'level_two_id');
+    }
 }
