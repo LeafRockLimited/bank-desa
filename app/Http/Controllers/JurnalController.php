@@ -165,9 +165,18 @@ class JurnalController extends Controller
      */
     public function destroy(int $id)
     {
-        $jurnal = Jurnal::where('id', $id)->first();
-        $this->deleteNeraca($jurnal);
-        $jurnal->delete();
-        return response()->json(['message' => 'Jurnal berhasil dihapus.']);
+        DB::beginTransaction();
+        try {
+            $jurnal = Jurnal::where('id', $id)->first();
+            $this->deleteNeraca($jurnal);
+            $this->deleteLabaRugi($jurnal);
+            $jurnal->delete();
+            DB::commit();
+            return response()->json(['message' => 'Jurnal berhasil dihapus.']);
+        }
+        catch (Throwable $th) {
+            DB::rollBack();
+            return response()->json(['error' => $th, 'message' => 'Jurnal gagal dihapus.'],500);
+        }
     }
 }

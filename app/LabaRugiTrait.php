@@ -174,4 +174,71 @@ trait LabaRugiTrait
         ];
     }
 
+
+    private function deleteLabaRugi(Jurnal $jurnal){
+        DB::beginTransaction();
+        $kodeRekening = KodeRekening::find($jurnal->id_rekening);
+
+        $thisYear = date('Y', strtotime($jurnal->tanggal_transaksi));
+        $thisMonth = date('m', strtotime($jurnal->tanggal_transaksi));
+        try {
+
+            $levelOne = LabaRugiLevel1::where('tahun', $thisYear)
+                ->where('bulan', $thisMonth)
+                ->where('level_one', $kodeRekening->level_one)
+                ->first();
+            $levelOne->total_this_month -= $jurnal->jumlah;
+            $levelOne->total_till_this_month -= $jurnal->jumlah;
+            $levelOne->save();
+
+
+            for ($i = $thisMonth; $i <= 12; $i++) {
+                if ($i != $thisMonth){
+                    $levelOneIter = LabaRugiLevel1::where('tahun', $thisYear)
+                        ->where('bulan', $i)
+                        ->where('level_one', $kodeRekening->level_one)
+                        ->first();
+                    $levelOneIter->total_till_this_month -= intval($jurnal->jumlah);
+                    $levelOneIter->save();
+                }else{
+                    $levelOneIter = $levelOne;
+                }
+
+                $levelTwoIter = LabaRugiLevel2::where('level_one_id', $levelOneIter->id)
+                    ->where('tahun', $thisYear)
+                    ->where('bulan', $i)
+                    ->where('level_two', $kodeRekening->level_two)
+                    ->first();
+
+                if($i == $thisMonth){
+                    $levelTwoIter->total_this_month = $levelTwoIter->total_this_month - intVal($jurnal->jumlah);
+                    $levelTwoIter->total_till_this_month = $levelTwoIter->total_till_this_month - intVal($jurnal->jumlah);
+                }else{
+                    $levelTwoIter->total_till_this_month = $levelTwoIter->total_till_this_month - intVal($jurnal->jumlah);
+                }
+
+                $levelTwoIter->save();
+
+                $levelThreeIter = LabaRugiLevel3::where('level_two_id', $levelTwoIter->id)
+                    ->where('tahun', $thisYear)
+                    ->where('bulan', $i)
+                    ->where('level_three', $kodeRekening->level_three)
+                    ->first();
+
+                if($i == $thisMonth){
+                    $levelThreeIter->total_this_month = $levelThreeIter->total_this_month - intVal($jurnal->jumlah);
+                    $levelThreeIter->total_till_this_month = $levelThreeIter->total_till_this_month - intVal($jurnal->jumlah);
+                }else{
+                    $levelThreeIter->total_till_this_month = $levelThreeIter->total_till_this_month - intVal($jurnal->jumlah);
+                }
+                $levelThreeIter->save();
+
+            }
+            DB::commit();
+        }
+        catch(\Exception $e){
+            DB::rollBack();
+            throw $e;
+        }
+    }
 }
