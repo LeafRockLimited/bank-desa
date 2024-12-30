@@ -7,6 +7,7 @@ use App\Models\KodeRekening;
 use App\Models\LabaRugiLevel1;
 use App\Models\LabaRugiLevel2;
 use App\Models\LabaRugiLevel3;
+use App\Models\Rumus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -61,9 +62,7 @@ trait LabaRugiTrait
     }
 
 
-    private function iterProcess(Builder $model,int $month, $to = 12,
-                                 Jurnal $jurnal, KodeRekening $rekening,
-                                 int $level = 1,int $jumlah = 0, array $modelBefore = []
+    private function iterProcess(Builder $model,int $month, $to = 12, Jurnal $jurnal, KodeRekening $rekening, int $level = 1,int $jumlah = 0, array $modelBefore = []
     ) : array{
 
         DB::beginTransaction();
@@ -78,7 +77,7 @@ trait LabaRugiTrait
                 $whereArray = [
                     'tahun' => date('Y', strtotime($jurnal->tanggal_transaksi)),
                     'bulan' => $i,
-                    $levelStrColumn => $rekening->level_one,
+                    $levelStrColumn => $rekening[$levelStrColumn],
                 ];
 
                 if ($modelBefore) {
@@ -101,7 +100,7 @@ trait LabaRugiTrait
                 $modelQueryBefore = clone $model;
                 $modelQueryBefore = $modelQueryBefore->where('tahun', date('Y',strtotime($jurnal->tanggal_transaksi)))
                     ->where('bulan', $i - 1)
-                    ->where($levelStrColumn, $rekening->level_one)
+                    ->where($levelStrColumn, $rekening[$levelStrColumn])
                     ->first();
 
                 if(isset($modelQueryBefore)){
@@ -144,4 +143,85 @@ trait LabaRugiTrait
 
     }
 
+    public function totalLabaRugi(int $tahun, int $bulan){
+
+    }
+
+    public function processFormula(array $dataRekening){
+        // Anggap kita memiliki semua data rekening ini
+        // Template atau validasi untuk memastikan semua akun ada
+        $template = [
+            // Pendapatan Usaha
+            'rekening4_1_01', // Pendapatan Wisata
+            'rekening4_1_02', // Pendapatan Pengelolaan Air Bersih
+            'rekening4_1_03', // Pendapatan Pengelolaan Sampah
+            'rekening4_1_04', // Pendapatan Sewa
+            'rekening4_1_05', // Pendapatan Jasa Pelayanan
+            'rekening4_2_01', // Pendapatan Penjualan Barang Dagangan
+            'rekening4_3_01', // Pendapatan Penjualan Barang Jadi
+
+            // Harga Pokok Penjualan
+            'rekening5_1_01', // Harga Pokok Penjualan Barang Dagangan
+            'rekening5_2_01', // Harga Pokok Penjualan Barang Jadi
+
+            // Beban-Beban Usaha
+            'rekening6_1_01', // Beban Pegawai Bagian Administrasi Umum
+            'rekening6_1_02', // Beban Perlengkapan
+            'rekening6_2_01', // Beban Pegawai Bagian Operasional
+            'rekening6_3_01', // Beban Pegawai Bagian Pemasaran
+
+            // Pendapatan dan Beban Lain-lain
+            'rekening7_1_01', // Pendapatan dari Bank
+            'rekening7_2_01', // Beban Bank
+            'rekening7_3_01', // Beban Pajak
+        ];
+
+        // Validasi dan set nilai default 0 jika null
+        foreach ($template as $rekening) {
+            if (!array_key_exists($rekening, $dataRekening)) {
+                // Jika key tidak ada, set ke 0
+                $dataRekening[$rekening] = 0;
+            } elseif (is_null($dataRekening[$rekening])) {
+                // Jika nilainya null, set ke 0
+                $dataRekening[$rekening] = 0;
+            }
+        }
+
+
+        // Ambil rumus dari database
+        $formula = $this->setFormula();
+        $slug = $formula->slug;
+
+        $rumus = $slug; // Simpan slug ke dalam rumus awal
+        foreach ($dataRekening as $placeholder => $value) {
+            $rumus = str_replace('${' . $placeholder . '}', $value, $rumus); // Simpan hasil di rumus
+        }
+
+        // Eksekusi rumus dengan eval
+        $result = eval("return $rumus;");
+
+        return $result;
+    }
+
+    /**
+     * @return void
+     * rumus default rekening (((4.1 + 4.2 + 4.3) -(5.1 + 5.2)) - (6.1 + 6.2 + 6.3)) + (7.1 - 7.2 - 7.3)
+     */
+    public function setFormula(){
+     $rumusLabaRugi = Rumus::updateOrCreate(
+         [
+             'name' => 'laba_rugi'
+         ],
+         [
+             'slug' => '(
+                (${rekening4_1_01} + ${rekening4_1_02} + ${rekening4_1_03} + ${rekening4_1_05} + ${rekening4_2_01} + ${rekening4_3_01})
+                - (${rekening5_1_01} + ${rekening5_2_01})
+                - (${rekening6_1_01} + ${rekening6_1_02} + ${rekening6_2_01} + ${rekening6_3_01})
+                + (${rekening7_1_01} - ${rekening7_2_01} - ${rekening7_3_01})
+            )'
+         ]
+     );
+
+    return $rumusLabaRugi;
+    }
 }
