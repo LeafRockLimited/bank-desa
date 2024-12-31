@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\CoaImport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\KodeRekening;
@@ -10,6 +11,7 @@ use App\Http\Requests\UpdateKodeRekeningRequest;
 use App\Models\JenisRekening;
 use Exception;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Excel;
 
 class KodeRekeningController extends Controller
 {
@@ -22,7 +24,7 @@ class KodeRekeningController extends Controller
         $kodeRekenings = KodeRekening::when($search,function($sub) use($search){
             $sub->where('nama_rekening','ilike',"%$search%");
             $sub->orWhere('nomor_rekening','ilike',"%$search%");
-        })->paginate($length)->withQueryString();
+        })->paginate($length)->onEachSide(1)->withQueryString();
 
         return Inertia::render('KodeRekening/Index',[
             'rekening' => $kodeRekenings,
@@ -122,6 +124,25 @@ class KodeRekeningController extends Controller
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
             return response()->json($th->getMessage(), 500);
+        }
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xls,xlsx'
+        ]);
+        try {
+
+            \Maatwebsite\Excel\Facades\Excel::import(new CoaImport(), $request->file('file'));
+
+            return response()->json([
+                'message' => 'Berhasil Import Data'
+            ],200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage()
+            ],500);
         }
     }
 

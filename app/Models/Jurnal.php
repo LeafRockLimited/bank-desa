@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use App\BukuBesarTrait;
+use App\Events\JurnalCreatedEvent;
+use App\LabaRugiTrait;
+use App\NeracaTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -39,6 +42,11 @@ class Jurnal extends Model
             }else{
                 $jurnal->jumlah = $jurnal->kredit - $jurnal->debit;
             }
+        });
+
+        static::created(function($jurnal) {
+            
+            event(new JurnalCreatedEvent($jurnal));
         });
 
         static::updating(function ($jurnal) {

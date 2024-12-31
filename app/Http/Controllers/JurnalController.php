@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\BukuBesarTrait;
 use App\Http\Requests\StroreJurnalRequest;
 use App\Http\Requests\UpdateJurnalRequest;
+use App\Imports\JurnalImport;
 use App\LabaRugiTrait;
 use App\Models\Jurnal;
 use App\Models\KeteranganTransaksiJurnal;
@@ -76,12 +77,6 @@ class JurnalController extends Controller
             }
 
             $jurnal = Jurnal::create($jurnal);
-
-            $this->createBukuBesar($jurnal);
-
-            $this->createNeracaPeriodic($jurnal);
-
-            $this->createLabaRugi($jurnal);
 
             DB::commit();
             return response()->json([
@@ -178,5 +173,28 @@ class JurnalController extends Controller
             DB::rollBack();
             return response()->json(['error' => $th, 'message' => 'Jurnal gagal dihapus.'],500);
         }
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xls,xlsx'
+        ]);
+        try {
+
+            \Maatwebsite\Excel\Facades\Excel::import(new JurnalImport(), $request->file('file'));
+            return response()->json([
+                'success' => true,
+                'message' => 'Jurnal berhasil diimport'
+            ]);
+        } catch (\Throwable $th) {
+            dd($th);
+            return response()->json([
+                'success' => false,
+                'error' => $th,
+                'message' => 'Jurnal gagal diimport'
+            ],500);
+        }
+
     }
 }

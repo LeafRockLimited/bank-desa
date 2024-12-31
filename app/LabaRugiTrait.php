@@ -144,7 +144,7 @@ trait LabaRugiTrait
     }
 
     public function totalLabaRugi(int $tahun, int $bulan){
-
+        return LabaRugiLevel1::where('tahun', $tahun)->where('bulan', $bulan)->sum('total_till_this_month');
     }
 
     public function processFormula(array $dataRekening){

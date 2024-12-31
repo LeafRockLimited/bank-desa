@@ -119,6 +119,7 @@ Route::middleware('auth')->group(function () {
             Route::get('edit/{id}', 'edit')->name('edit');
             Route::put('update/{id}', 'update')->name('update');
             Route::delete('delete/{id}', 'destroy')->name('delete');
+            Route::post('import', 'import')->name('import');
         });
 
     Route::prefix('jurnal')
@@ -132,6 +133,7 @@ Route::middleware('auth')->group(function () {
             Route::get('edit/{id}', 'edit')->name('edit');
             Route::put('update/{id}','update')->name('update');
             Route::delete('delete/{id}', 'destroy')->name('delete'); // Menghapus transaksi
+            Route::post('import', 'import')->name('import');
         });
 
     Route::prefix('buku_besar')
@@ -157,10 +159,17 @@ Route::middleware('auth')->group(function () {
         });
 
     Route::prefix('laba_rugi')
-        ->name('laba_rugi')
+        ->name('laba_rugi.')
         ->controller(\App\Http\Controllers\LabaRugiController::class)
         ->group(function(){
             Route::get('/','index')->name('index');
+        });
+
+    Route::prefix('lpe')
+        ->name('lpe.')
+        ->controller(\App\Http\Controllers\LpeController::class)
+        ->group(function (){
+            Route::get('download','download')->name('download');
         });
 });
 

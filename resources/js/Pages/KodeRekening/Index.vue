@@ -15,11 +15,21 @@
                         <p class=" text-lg font-bold">Kode Rekening</p>
                         <!-- description -->
                         <p> Isi data kode rekening</p>
-                        <div class="mt-4">
-                            <Link :href="route('kode_rekening.create')">
-                                <PrimaryButton class="">+ Tambah</PrimaryButton>
-                            </Link>
-                        </div>
+                       <div class="flex flex-row space-x-6 items-start">
+                           <div class="mt-4">
+                               <Link :href="route('kode_rekening.create')">
+                                   <PrimaryButton class="">+ Tambah</PrimaryButton>
+                               </Link>
+                           </div>
+
+                           <div class="mt-4 border p-4">
+                               <label for="">Upload data Akun Rekening</label>
+                               <form @submit.prevent="uploadFile" enctype="multipart/form-data">
+                                   <input type="file" @change="handleFileChange" />
+                                   <PrimaryButton class="" type="submit">Upload</PrimaryButton>
+                               </form>
+                           </div>
+                       </div>
                     </div>
                 </div>
             </template>
@@ -96,6 +106,7 @@ import CardBody from '@/Components/CardBody.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue'
 import SecondaryButton from '@/Components/SecondaryButton.vue'
 import Helper from '@/Helper';
+import Toast from "@/Toast.js";
 
 export default {
     components:{
@@ -136,7 +147,8 @@ export default {
             page: 1,
             lengthQuery: this.length,
             dataResponse:{},
-            searchQuery: this.search
+            searchQuery: this.search,
+            uploadedFile:null
         }
     },
     methods: {
@@ -146,6 +158,24 @@ export default {
                 length: this.lengthQuery,
                 searchQuery: this.searchQuery
             })
+        },
+        async uploadFile(){
+            try {
+                const formData = new FormData();
+                formData.append('file', this.uploadedFile)
+                const request = await axios.post(route('kode_rekening.import'), formData)
+                const response = request.data
+                this.dataResponse = response
+                Toast.fire('Berhasil','File Berhasil disimpan','success');
+            }
+            catch (error) {
+                Toast.fire('Gagal','File gagal disimpan','error');
+            }
+
+        },
+        handleFileChange(event){
+          this.uploadedFile = event.target.files[0]
+            console.log(this.uploadedFile)
         }
     }
 

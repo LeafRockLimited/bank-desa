@@ -20,6 +20,12 @@
                                 <PrimaryButton class="">+ Tambah</PrimaryButton>
                             </Link>
                         </div>
+                        <div>
+                            <form @submit.prevent="postData">
+                                <input type="file" @change="handleFileChange">
+                                <button class="btn btn-primary">Upload</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </template>
@@ -143,7 +149,8 @@ export default {
             data:this.jurnals.data,
             page: 1,
             lengthQuery: this.length,
-            searchQuery: this.search
+            searchQuery: this.search,
+            uploadedFile:null
         }
     },
     methods: {
@@ -153,6 +160,24 @@ export default {
                 length: this.lengthQuery,
                 searchQuery: this.searchQuery
             })
+        },
+        async postData(){
+            try {
+                const url = route('jurnal.import')
+                const formData = new FormData();
+                formData.append('file',this.uploadedFile)
+                const request = await axios.post(url,formData,{
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                })
+            }
+            catch (error) {
+                console.log(error)
+            }
+        },
+        handleFileChange(event){
+          this.uploadedFile = event.target.files[0]
         }
     }
 
