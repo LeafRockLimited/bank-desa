@@ -1,9 +1,9 @@
 <template>
 <div class="p-4">
     <!-- Input untuk pencarian -->
-    <div class="flex flex-row items-end justify-between mb-4">
+    <div class="flex flex-row items-center justify-between mb-4">
 
-        <div class="flex flex-row space-x-3 px-3 items-end w-full">
+        <div class="flex flex-row space-x-3 px-3 items-center w-full">
 
             <select v-model="lengthData" class="md:w-20 bg-gray-50 border border-gray-300 text-gray-900
             text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500
@@ -16,7 +16,7 @@
             <slot name="filter"></slot>
         </div>
 
-        <div class="flex flex-row space-x-2">
+        <div class="flex flex-row space-x-2 items-center">
             <input type="text" v-model="searchQuery" placeholder="Cari..." class="border rounded-lg w-fit" />
             <slot name="action"></slot>
         </div>

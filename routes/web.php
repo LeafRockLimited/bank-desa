@@ -171,6 +171,13 @@ Route::middleware('auth')->group(function () {
         ->group(function (){
             Route::get('download','download')->name('download');
         });
+
+    Route::prefix('lak')
+        ->name('lak.')
+        ->controller(\App\Http\Controllers\LakController::class)
+        ->group(function (){
+            Route::get('download','download')->name('download');
+        });
 });
 
 

@@ -35,6 +35,7 @@ const showingNavigationDropdown = ref(false);
                 <NavLink :href="route('kode_rekening.index')" :active="route().current('jenis_rekening.*') || route().current('kode_rekening.*')">COA ( Rekening )</NavLink>
                 <NavLink :href="route('jurnal.index')" :active="route().current('jurnal.*')">Jurnal</NavLink>
                 <NavLink :href="route('buku_besar.index')" :active="route().current('buku_besar.*')">Buku Besar</NavLink>
+                <NavLink :href="route('laba_rugi.index')" :active="route().current('laba_rugi.*')">Laba Rugi</NavLink>
                 <NavLink :href="route('neraca.index')" :active="route().current('neraca.*')">Neraca</NavLink>
             </nav>
         </div>
