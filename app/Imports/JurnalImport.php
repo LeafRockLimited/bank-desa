@@ -26,7 +26,7 @@ class JurnalImport implements ToCollection, ShouldQueue, WithChunkReading, WithS
     {
 
         DB::beginTransaction();
-        DB::statement('LOCK TABLE jurnals IN EXCLUSIVE MODE');
+//        DB::statement('LOCK TABLE jurnals IN EXCLUSIVE MODE');
 
         try {
 

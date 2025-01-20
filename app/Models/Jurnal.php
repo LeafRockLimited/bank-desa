@@ -45,8 +45,8 @@ class Jurnal extends Model
         });
 
         static::created(function($jurnal) {
-            
-            event(new JurnalCreatedEvent($jurnal));
+
+//            event(new JurnalCreatedEvent($jurnal));
         });
 
         static::updating(function ($jurnal) {

@@ -62,6 +62,7 @@ class JurnalController extends Controller
      */
     public function store(StroreJurnalRequest $request)
     {
+
         $jurnal = $request->validated();
         $keterangan = KeteranganTransaksiJurnal::where('name',$jurnal['keterangan'])->first();
 
@@ -78,13 +79,16 @@ class JurnalController extends Controller
 
             $jurnal = Jurnal::create($jurnal);
 
+            $this->createBukuBesar($jurnal);
+            $this->createNeracaPeriodic($jurnal);
+            $this->createLabaRugi($jurnal);
+
             DB::commit();
             return response()->json([
                 'success' => true,
                 'message' => 'Jurnal berhasil ditambahkan'
             ]);
         }catch (\Throwable $th) {
-            dd($th);
             DB::rollBack();
             return response()->json([
                 'success' => false,

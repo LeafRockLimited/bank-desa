@@ -13,7 +13,7 @@ trait NeracaTrait
   public function createNeracaPeriodic(Jurnal $jurnal) : void{
       DB::beginTransaction();
       try {
-          DB::statement('LOCK TABLE neracas IN EXCLUSIVE MODE');
+//          DB::statement('LOCK TABLE neracas IN EXCLUSIVE MODE');
 
 //          cek neraca periode ini
           $neracaThisPeriode = $this->getNeracaPeriod($jurnal);
@@ -44,7 +44,7 @@ trait NeracaTrait
   public function updateNeraca(Jurnal $oldJurnal, Jurnal $newJurnal){
     DB::beginTransaction();
       try {
-          DB::statement('LOCK TABLE neracas IN EXCLUSIVE MODE');
+//          DB::statement('LOCK TABLE neracas IN EXCLUSIVE MODE');
           $debit = $newJurnal->debit - $oldJurnal->debit;
           $kredit = $newJurnal->kredit - $oldJurnal->kredit;
 
@@ -65,7 +65,7 @@ trait NeracaTrait
   public function deleteNeraca(Jurnal $jurnal){
       DB::beginTransaction();
       try {
-      DB::statement('LOCK TABLE neracas IN EXCLUSIVE MODE');
+//      DB::statement('LOCK TABLE neracas IN EXCLUSIVE MODE');
           $oldNeraca = $this->getNeracaPeriod($jurnal);
 
           $newNeraca = $oldNeraca;

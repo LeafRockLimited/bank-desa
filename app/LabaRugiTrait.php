@@ -22,7 +22,7 @@ trait LabaRugiTrait
     public function createLabaRugi(Jurnal $jurnal) : void{
         DB::beginTransaction();
         try {
-            DB::statement('LOCK TABLE laba_rugi_level1s IN EXCLUSIVE MODE');
+//            DB::statement('LOCK TABLE laba_rugi_level1s IN EXCLUSIVE MODE');
             $rekening = KodeRekening::where('id',$jurnal->id_rekening)->first();
             $this->lastMonth = Carbon::create($jurnal->tanggal_transaksi)->subMonth()->format('m');
             $thisMonth = date('m',strtotime($jurnal->tanggal_transaksi));
@@ -121,22 +121,12 @@ trait LabaRugiTrait
                 $modelQuery->save();
 
                 $insertedData[] = $modelQuery;
-                Log::info('DATA INSERTED',[
-                    'bulan' => $i,
-                    $modelQuery
-                ]);
             }
             DB::commit();
             return $insertedData;
         }
 
         catch (\Exception $e) {
-            Log::error($e->getMessage(),[
-                'level' => $level,
-                'bulan' => $month,
-                'jumlah' => $jumlah,
-                'trace' => $e->getTraceAsString()
-            ]);
             DB::rollBack();
             throw $e;
         }
@@ -223,5 +213,20 @@ trait LabaRugiTrait
      );
 
     return $rumusLabaRugi;
+    }
+
+    public function array_search_recursive($needle, $haystack, $strict = false) {
+        foreach ($haystack as $key => $value) {
+            if ($strict ? $value === $needle : $value == $needle) {
+                return [$key];
+            }
+            if (is_array($value)) {
+                $result = $this->array_search_recursive($needle, $value, $strict);
+                if ($result !== false) {
+                    return [$key] + $result;
+                }
+            }
+        }
+        return false;
     }
 }

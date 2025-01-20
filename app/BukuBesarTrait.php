@@ -11,7 +11,7 @@ trait BukuBesarTrait
     public function createBukuBesar(Jurnal $jurnal):void{
         DB::beginTransaction();
         try {
-            DB::statement('LOCK TABLE buku_besars IN EXCLUSIVE MODE');
+//            DB::statement('LOCK TABLE buku_besars IN EXCLUSIVE MODE');
             $bukuBesar = new BukuBesar();
             $bukuBesar->id_jurnal = $jurnal->id;
             $bukuBesar->id_rekening = $jurnal->id_rekening;
