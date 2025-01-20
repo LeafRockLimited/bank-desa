@@ -11,7 +11,7 @@
         <CardBody>
             <template v-slot:content>
                 <div class="grid grid-cols-1 gap-6">
-                    
+
                     <div class=" w-full">
                         <p class="text-lg font-bold">Edit Kode Rekening</p>
                         <p>Perbarui formulir kode rekening</p>
@@ -38,16 +38,11 @@
                             <p v-if="errors.nama_rekening" class="text-red-600 text-sm mt-1">{{ errors.nama_rekening[0] }}</p>
                         </div>
 
-                        <!-- Tipe Akun -->
                         <div class="">
-                            <label for="tipe" class="block text-sm font-medium text-gray-700">Tipe Akun</label>
-                            <select id="tipe" v-model="form.tipe" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                                <option value="">Pilih Tipe Akun</option>
-                                <option value="pendapatan">Pendapatan</option>
-                                <option value="pengeluaran">Pengeluaran</option>
-                                <option value="pembiayaan">Pembiayaan</option>
-                            </select>
-                            <p v-if="errors.tipe" class="text-red-600 text-sm mt-1">{{ errors.tipe[0] }}</p>
+                            <label for="tipe" class="block text-sm font-medium text-gray-700">Saldo Normal</label>
+                            <v-select v-model="form.saldo_normal" taggable :options="['Debit','Kredit']">
+                            </v-select>
+                            <p v-if="errors.sub_tipe" class="text-red-600 text-sm mt-1">{{ errors.sub_tipe[0] }}</p>
                         </div>
 
                         <!-- Status -->
@@ -85,6 +80,7 @@ import CardBody from '@/Components/CardBody.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Toast from '@/Toast';
 import axios from 'axios';
+import NumberFormating from "@/Service/NumberFormating.js";
 
 export default {
     components: {
@@ -96,10 +92,9 @@ export default {
     data() {
         return {
             form: useForm({
-                jenis_rekening_id: this.kode_rekening.jenis_rekening_id,
                 nomor_rekening: this.kode_rekening.nomor_rekening,
                 nama_rekening: this.kode_rekening.nama_rekening,
-                tipe: this.kode_rekening.tipe || null,
+                saldo_normal: this.kode_rekening.saldo_normal || null,
                 status: this.kode_rekening.status || 'aktif',
                 deskripsi: this.kode_rekening.deskripsi || null,
             }),
@@ -110,23 +105,9 @@ export default {
     },
     methods: {
         formatNumber(event) {
-            let rawNumber = event.target.value.replace(/\D/g, ''); // Menghapus semua karakter non-digit
-            let formatted = [];
-            let startIndex = 0;
-            let blockIndex = 0; // Index untuk mengulang array blockSizes
-
-            while (startIndex < rawNumber.length) {
-                const size = this.blockSizes[blockIndex % this.blockSizes.length];
-                const block = rawNumber.substr(startIndex, size);
-                
-                if (block) {
-                    formatted.push(block);
-                }
-                startIndex += size;
-                blockIndex++;
-            }
-
-            this.form.nomor_rekening = formatted.join(this.separator);
+            const value = event .target.value;
+            const formatRekening = NumberFormating.rekeningFormat(value)
+            this.form.nomor_rekening = formatRekening;
         },
         async submit() {
             try {
@@ -135,7 +116,7 @@ export default {
                     icon: 'success',
                     title: 'Data Berhasil disimpan',
                 });
-                this.$inertia.visit(route('kode_rekening.index', { jenis_rekening: this.kode_rekening.jenis_rekening_id }));
+                this.$inertia.visit(route('kode_rekening.index'));
             } catch (error) {
                 console.log(error);
                 if (error.response && error.response.status === 422) {

@@ -111,29 +111,30 @@ Route::middleware('auth')->group(function () {
         ->name('kode_rekening.')
         ->controller(KodeRekeningController::class)
         ->group(function () {
-            Route::get('/index/{jenis_rekening}', 'index')->name('index');
-            Route::get('show/{jenis_rekening?}', 'show')->name('show');
-            Route::get('create/{jenis_rekening}', 'create')->name('create');
-            Route::post('store', 'store')->name('store');
-            Route::get('edit/{id}', 'edit')->name('edit');
-            Route::put('update/{id}', 'update')->name('update');
-            Route::delete('delete/{id}', 'destroy')->name('delete');
-        });
-
-    Route::prefix('jenis_rekening')
-        ->name('jenis_rekening.')
-        ->controller(JenisRekeningController::class)
-        ->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('show', 'show')->name('show');
-            Route::get('show_all', 'show_all')->name('show_all');
+            Route::get('level_data', 'level_data')->name('level_data');
             Route::get('create', 'create')->name('create');
             Route::post('store', 'store')->name('store');
             Route::get('edit/{id}', 'edit')->name('edit');
             Route::put('update/{id}', 'update')->name('update');
             Route::delete('delete/{id}', 'destroy')->name('delete');
+            Route::post('import', 'import')->name('import');
         });
 
+    Route::prefix('jurnal')
+        ->name('jurnal.')
+        ->controller(\App\Http\Controllers\JurnalController::class)
+        ->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('show', 'show')->name('show');
+            Route::get('create', 'create')->name('create');
+            Route::post('store', 'store')->name('store');
+            Route::get('edit/{id}', 'edit')->name('edit');
+            Route::put('update/{id}','update')->name('update');
+            Route::delete('delete/{id}', 'destroy')->name('delete'); // Menghapus transaksi
+            Route::post('import', 'import')->name('import');
+        });
 
     Route::prefix('buku_besar')
         ->name('buku_besar.')
@@ -155,6 +156,27 @@ Route::middleware('auth')->group(function () {
         ->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('show', 'show')->name('show');
+        });
+
+    Route::prefix('laba_rugi')
+        ->name('laba_rugi.')
+        ->controller(\App\Http\Controllers\LabaRugiController::class)
+        ->group(function(){
+            Route::get('/','index')->name('index');
+        });
+
+    Route::prefix('lpe')
+        ->name('lpe.')
+        ->controller(\App\Http\Controllers\LpeController::class)
+        ->group(function (){
+            Route::get('download','download')->name('download');
+        });
+
+    Route::prefix('lak')
+        ->name('lak.')
+        ->controller(\App\Http\Controllers\LakController::class)
+        ->group(function (){
+            Route::get('download','download')->name('download');
         });
 });
 

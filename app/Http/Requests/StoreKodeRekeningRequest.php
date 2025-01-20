@@ -22,22 +22,31 @@ class StoreKodeRekeningRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'jenis_rekening_id' => 'required|exists:jenis_rekenings,id',
-            'nomor_rekening' => 'required',
+            'nomor_rekening' => 'required|unique:kode_rekenings,nomor_rekening',
             'nama_rekening' => 'required',
-            'tipe' => 'required',
-            'sub_tipe' => 'required',
-            'status' => 'nullable|in:aktif,nonaktif',
+            'saldo_normal' => 'required|in:Debit,Kredit',
             'deskripsi' => 'nullable',
+            'level_one' => 'nullable',
+            'uraian_level_one' => 'nullable',
+            'level_two' => 'nullable',
+            'uraian_level_two' => 'nullable',
+            'level_three' => 'nullable',
+            'uraian_level_three' => 'nullable',
+            'level_four' => 'nullable',
+            'uraian_level_four' => 'nullable',
+            'level_five' => 'nullable',
+            'uraian_level_five' => 'nullable',
+            'level_six' => 'nullable',
+            'uraian_level_six' => 'nullable',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'required' => 'Kolom :attribute harus diisi',
-            'in' => 'Kolom :attribute harus dipilih',
-            'exists' => 'Kolom :attribute harus dipilih',
+            'required' => ':attribute wajib diisi',
+            'unique' => ':attribute sudah ada',
+            'in' => ':attribute salah'
         ];
     }
 }

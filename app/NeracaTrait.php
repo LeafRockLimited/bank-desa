@@ -2,44 +2,101 @@
 
 namespace App;
 
+use App\Models\Jurnal;
 use App\Models\KodeRekening;
+use App\Models\Neraca;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 trait NeracaTrait
 {
-   /**
-     * Mendapatkan rekap total debit, kredit, dan saldo untuk setiap kode rekening yang difilter berdasarkan tahun.
-     *
-     * @param int|null $tahun
-     * @return \Illuminate\Support\Collection
-     */
-    public function getRekapNeracaPerTahun($tahun = null, $page = 1 , $perPage = 10, $search = null)
-    {
-        // Jika tahun tidak disediakan, gunakan tahun sekarang
-        $tahun = $tahun ?? Carbon::now()->year;
+  public function createNeracaPeriodic(Jurnal $jurnal) : void{
+      DB::beginTransaction();
+      try {
+//          DB::statement('LOCK TABLE neracas IN EXCLUSIVE MODE');
 
-        // Ambil semua kode rekening beserta total debit, kredit, dan saldo dari buku besar berdasarkan tahun
-        $rekap = KodeRekening::with(['bukuBesars' => function($query) use ($tahun) {
-            $query->whereYear('tanggal', $tahun) // Filter berdasarkan tahun
-                ->selectRaw('id_kode_rekening, SUM(debit) as total_debit, SUM(kredit) as total_kredit, MAX(saldo) as total_saldo')
-                ->groupBy('id_kode_rekening');
-        }])
-        ->when($search, function ($query) use ($search) {
-            $query->where('nomor_rekening', 'ilike', "%$search%")
-                ->orWhere('nama_rekening', 'ilike', "%$search%");
-        })
-        ->paginate($perPage, ['*'], 'page', $page);  // Menggunakan paginate() dengan jumlah item per halaman
+//          cek neraca periode ini
+          $neracaThisPeriode = $this->getNeracaPeriod($jurnal);
 
-        // Format hasil dan kembalikan dalam bentuk LengthAwarePaginator
-        return $rekap->through(function ($kodeRekening) {
-            $bukuBesar = $kodeRekening->bukuBesars->first();
-            return [
-                'kode_rekening' => $kodeRekening->nomor_rekening,
-                'nama_rekening' => $kodeRekening->nama_rekening,
-                'total_debit' => $bukuBesar->total_debit ?? 0,
-                'total_kredit' => $bukuBesar->total_kredit ?? 0,
-                'total_saldo' => $bukuBesar->total_saldo ?? 0,
-            ];
-        });
+          if($neracaThisPeriode){
+              $newNeraca = $neracaThisPeriode;
+          }else{
+              $newNeraca = new Neraca();
+              $newNeraca->id_rekening = $jurnal->id_rekening;
+              $newNeraca->tahun = $neraca->tahun??date('Y',strtotime($jurnal->tanggal_transaksi));
+              $newNeraca->bulan = $neraca->bulan??date('m',strtotime($jurnal->tanggal_transaksi));
+          }
+          $newNeraca->neraca_debit = isset($neracaThisPeriode->neraca_debit) ? $neracaThisPeriode->neraca_debit + $jurnal->debit : $jurnal->debit;
+          $newNeraca->neraca_kredit = isset($neracaThisPeriode->neraca_kredit)? $neracaThisPeriode->neraca_kredit + $jurnal->kredit : $jurnal->kredit;
+
+          $neraca = $this->neracaOperation($newNeraca, $neracaThisPeriode??$newNeraca, $jurnal);
+          $neraca->save();
+
+          DB::commit();
+      }
+      catch (Throwable $th) {
+          DB::rollBack();
+          throw $th;
+      }
+
+  }
+
+  public function updateNeraca(Jurnal $oldJurnal, Jurnal $newJurnal){
+    DB::beginTransaction();
+      try {
+//          DB::statement('LOCK TABLE neracas IN EXCLUSIVE MODE');
+          $debit = $newJurnal->debit - $oldJurnal->debit;
+          $kredit = $newJurnal->kredit - $oldJurnal->kredit;
+
+          $currentNeraca = $this->getNeracaPeriod($oldJurnal);
+          $currentNeraca->neraca_debit = $currentNeraca->neraca_debit + $debit;
+          $currentNeraca->neraca_kredit = $currentNeraca->neraca_kredit + $kredit;
+
+          $neraca = $this->neracaOperation($currentNeraca, $currentNeraca, $newJurnal);
+          $neraca->save();
+            DB::commit();
+      }
+      catch (Throwable $th) {
+          DB::rollBack();
+          throw $th;
+      }
+  }
+
+  public function deleteNeraca(Jurnal $jurnal){
+      DB::beginTransaction();
+      try {
+//      DB::statement('LOCK TABLE neracas IN EXCLUSIVE MODE');
+          $oldNeraca = $this->getNeracaPeriod($jurnal);
+
+          $newNeraca = $oldNeraca;
+          $newNeraca->neraca_debit = $newNeraca->neraca_debit - $jurnal->debit;
+          $newNeraca->neraca_kredit = $newNeraca->neraca_kredit - $jurnal->kredit;
+          $neraca = $this->neracaOperation($newNeraca, $oldNeraca, $jurnal);
+          $neraca->save();
+        DB::commit();
+      }
+      catch (Throwable $th) {
+          DB::rollBack();
+          throw $th;
+      }
+
+  }
+
+  private function neracaOperation(Neraca $insertedNeraca, Neraca $currentNeraca, Jurnal $jurnal){
+      $insertedNeraca->saldo_debit = $currentNeraca->neraca_debit > $insertedNeraca->neraca_kredit ? $insertedNeraca->neraca_debit - $insertedNeraca->neraca_kredit : 0;
+      $insertedNeraca->saldo_kredit = $currentNeraca->neraca_debit < $insertedNeraca->neraca_kredit ? $insertedNeraca->neraca_kredit - $insertedNeraca->neraca_debit : 0;
+
+      $jumlah = $insertedNeraca->neraca_kredit - $insertedNeraca->neraca_debit;
+      $insertedNeraca->jumlah = $jumlah;
+
+      return $insertedNeraca;
+  }
+    private function getNeracaPeriod(Jurnal $jurnal){
+        $neraca = Neraca::where('tahun', date('Y',strtotime($jurnal->tanggal_transaksi)))
+            ->where('bulan', date('m',strtotime($jurnal->tanggal_transaksi)))
+            ->where('id_rekening', $jurnal->id_rekening)
+            ->first();
+
+        return $neraca;
     }
 }

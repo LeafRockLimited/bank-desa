@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\CoaImport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\KodeRekening;
@@ -10,38 +11,49 @@ use App\Http\Requests\UpdateKodeRekeningRequest;
 use App\Models\JenisRekening;
 use Exception;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Excel;
 
 class KodeRekeningController extends Controller
 {
     //
-    public function index($idJenisRekening)
-    {   
+    public function index(Request $request)
+    {
+        $search = $request->searchQuery;
+        $length = $request->length??10;
 
-        $jenisRekening = JenisRekening::find($idJenisRekening);
-        if (!isset($jenisRekening)) {
-            abort(404, 'Jenis Rekening tidak ditemukan');
-        }
-       
+        $kodeRekenings = KodeRekening::when($search,function($sub) use($search){
+            $sub->where('nama_rekening','ilike',"%$search%");
+            $sub->orWhere('nomor_rekening','ilike',"%$search%");
+        })->paginate($length)->onEachSide(1)->withQueryString();
+
         return Inertia::render('KodeRekening/Index',[
-            'jenis_rekening' => $idJenisRekening
+            'rekening' => $kodeRekenings,
+            'search' => $search,
+            'length' => $length
         ]);
     }
 
-    public function create($jenis_rekening_id)
+    public function create()
     {
-        $jenisRekening = JenisRekening::find($jenis_rekening_id);
-        if (!isset($jenisRekening)) {
-            abort(404, 'Jenis Rekening tidak ditemukan');
+        return Inertia::render('KodeRekening/Create');
+    }
+
+    public function level_data(Request $request){
+        $data = $request->rekening;
+
+        $kodeRekenings = KodeRekening::query();
+        $strNum = ['one','two','three','four','five','six'];
+
+        $levelData = [];
+        foreach ($data as $key => $value) {
+            $kodeRekenings->where('level_'.$strNum[$key],$value['kode_level']);
+            $level_name = $kodeRekenings->first();
+            if ($level_name) {
+
+                $levelData[] = $level_name['uraian_level_'.$strNum[$key]];
+            }
         }
-
-        $tipe = KodeRekening::select('tipe')->groupBy('tipe')->get();
-        $subTipe = KodeRekening::select('sub_tipe')->groupBy('sub_tipe')->get();
-
-        return Inertia::render('KodeRekening/Create',[
-            'jenis_rekening' => $jenisRekening,
-            'tipe' => $tipe,
-            'sub_tipe' => $subTipe
-        ]);
+        return response()->json($levelData);
     }
 
     public function edit($kodeRekeningId){
@@ -54,11 +66,11 @@ class KodeRekeningController extends Controller
 
     public function show(Request $request, $jenisRekening = null){
 
-    
+
         try {
             $search = $request->searchQuery;
             $length = $request->length??10;
-            
+
             $kodeRekenings = KodeRekening::when($search,function($sub) use($search){
                 $sub->where('nomor_rekening','ilike',"%$search%")
                 ->orWhere('nama_kode_rekening','ilike',"%$search%");
@@ -75,7 +87,7 @@ class KodeRekeningController extends Controller
             return response()->json([
                 'message' => $th->getMessage()
             ],500);
-        }   
+        }
     }
 
     public function store(StoreKodeRekeningRequest $request){
@@ -89,14 +101,14 @@ class KodeRekeningController extends Controller
         }
     }
 
-    public function update(StoreKodeRekeningRequest $request, $id) {
+    public function update(UpdateKodeRekeningRequest $request, $id) {
         $validated = $request->validated();
-        
+
         try {
             $kodeRekening = KodeRekening::findOrFail($id);
             $kodeRekening->update($validated);
             $kodeRekening->save();
-            
+
             return response()->json('Berhasil Memperbarui Kode Rekening');
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
@@ -112,6 +124,25 @@ class KodeRekeningController extends Controller
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
             return response()->json($th->getMessage(), 500);
+        }
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xls,xlsx'
+        ]);
+        try {
+
+            \Maatwebsite\Excel\Facades\Excel::import(new CoaImport(), $request->file('file'));
+
+            return response()->json([
+                'message' => 'Berhasil Import Data'
+            ],200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage()
+            ],500);
         }
     }
 

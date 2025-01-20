@@ -4,35 +4,30 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class KodeRekening extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'jenis_rekening_id',
         'nomor_rekening',
         'nama_rekening',
-        'tipe',
-        'sub_tipe',
-        'status',
+        'saldo_normal',
         'deskripsi',
+        'level_one',
+        'uraian_level_one',
+        'level_two',
+        'uraian_level_two',
+        'level_three',
+        'uraian_level_three',
+        'level_four',
+        'uraian_level_four',
+        'level_five',
+        'uraian_level_five',
+        'level_six',
+        'uraian_level_six',
     ];
-
-    
-    public function getJenisRekeningAttribute()
-    {
-        $idJenis = $this->kode_rekening['id_jenis'];
-        return JenisRekening::where('id_jenis', $idJenis)->first();
-    }
-
-    public function jenis_rekening(){
-        return $this->belongsTo(JenisRekening::class,'jenis_rekening_id','id');
-    }
-
-    public function rekening_plotting(){
-        return $this->hasOne(RekeningPlotting::class,'kode_rekening_id','id');
-    }
 
     public function bukuBesars()
     {

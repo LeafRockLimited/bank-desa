@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Events\JurnalCreatedEvent;
+use App\Listeners\JurnalCreatedListener;
 use Illuminate\Support\ServiceProvider;
-
+use Illuminate\Support\Facades\Event;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -19,6 +21,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Event::listen(JurnalCreatedEvent::class, JurnalCreatedListener::class);
     }
 }
