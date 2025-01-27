@@ -1,0 +1,321 @@
+:root {
+    --dt-row-selected: 13, 110, 253;
+    --dt-row-selected-text: 255, 255, 255;
+    --dt-row-selected-link: 9, 10, 11;
+    --dt-row-stripe: 0, 0, 0;
+    --dt-row-hover: 0, 0, 0;
+    --dt-column-ordering: 0, 0, 0;
+    --dt-html-background: white;
+}
+
+:root.dark {
+    --dt-html-background: rgb(33, 37, 41);
+}
+
+
+
+
+table.display {
+    font-family: 'Muli';
+    table-layout: auto;
+}
+
+table.dataTable.compact tbody th,
+table.dataTable.compact tbody td,
+table.dataTable.compact tfoot td {
+    /*padding: 0px 17px 0px 4px;*/
+    padding: 0px 0px 0px 0px;
+}
+
+.details-control,.details-control1{
+    width: 3%;
+}
+
+td.details-control {
+    background: url(https://www.datatables.net/examples/resources/details_open.png) no-repeat center center;
+    cursor: pointer;
+
+    transition: .5s;
+}
+
+tr.shown td.details-control {
+    background: url(https://www.datatables.net/examples/resources/details_close.png) no-repeat center center;
+
+    transition: .5s;
+}
+
+td.details-control1 {
+    background: url(https://www.datatables.net/examples/resources/details_open.png) no-repeat center center;
+    cursor: pointer;
+
+    transition: .5s;
+}
+
+tr.shown td.details-control1 {
+    background: url(https://www.datatables.net/examples/resources/details_close.png) no-repeat center center;
+
+    transition: .5s;
+}
+
+td.details-control2 {
+    background: url(https://www.datatables.net/examples/resources/details_open.png) no-repeat center center;
+    cursor: pointer;
+    transition: .5s;
+}
+
+tr.shown td.details-control2 {
+    background: url(https://www.datatables.net/examples/resources/details_close.png) no-repeat center center;
+    width: 0px ;
+    transition: .5s;
+}
+
+.fee-col {
+    text-align: right;
+    width: 8%;
+}
+
+.label-col {
+    text-align: left;
+    width: 32%;
+}
+
+.label-col2 {
+    text-align: left;
+    width: 31%;
+}
+
+.label-col3 {
+    text-align: left;
+    width: 30%;
+}
+
+tr.shown td {
+    background-color: lightgrey !important;
+    transition: .5s;
+    font-weight: 800
+}
+
+td.invoice-date {
+    background-color: rgba(237, 205, 255, .2);
+    width: 100px;
+}
+
+td.invoice-author {
+    background-color: rgba(237, 205, 255, .2);
+    width: 100px;
+}
+
+td.invoice-notes {
+    background-color: rgba(237, 205, 255, .2);
+    white-space: normal !important;
+}
+
+
+table.dataTable td.dt-control {
+    text-align: center;
+    cursor: pointer;
+}
+
+table.dataTable td.dt-control:before {
+    display: inline-block;
+    box-sizing: border-box;
+    content: "";
+    border-top: 5px solid transparent;
+    border-left: 10px solid rgba(0, 0, 0, 0.5);
+    border-bottom: 5px solid transparent;
+    border-right: 0px solid transparent;
+}
+
+table.dataTable tr.dt-hasChild td.dt-control:before {
+    border-top: 10px solid rgba(0, 0, 0, 0.5);
+    border-left: 5px solid transparent;
+    border-bottom: 0px solid transparent;
+    border-right: 5px solid transparent;
+}
+
+table.dataTable tfoot:empty {
+    display: none;
+}
+
+html.dark table.dataTable td.dt-control:before,
+:root[data-bs-theme=dark] table.dataTable td.dt-control:before,
+:root[data-theme=dark] table.dataTable td.dt-control:before {
+    border-left-color: rgba(255, 255, 255, 0.5);
+}
+
+html.dark table.dataTable tr.dt-hasChild td.dt-control:before,
+:root[data-bs-theme=dark] table.dataTable tr.dt-hasChild td.dt-control:before,
+:root[data-theme=dark] table.dataTable tr.dt-hasChild td.dt-control:before {
+    border-top-color: rgba(255, 255, 255, 0.5);
+    border-left-color: transparent;
+}
+
+div.dt-scroll {
+    width: 100%;
+}
+
+div.dt-scroll-body thead tr,
+div.dt-scroll-body tfoot tr {
+    height: 0;
+}
+
+div.dt-scroll-body thead tr th,
+div.dt-scroll-body thead tr td,
+div.dt-scroll-body tfoot tr th,
+div.dt-scroll-body tfoot tr td {
+    height: 0 !important;
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+    border-top-width: 0px !important;
+    border-bottom-width: 0px !important;
+}
+
+div.dt-scroll-body thead tr th div.dt-scroll-sizing,
+div.dt-scroll-body thead tr td div.dt-scroll-sizing,
+div.dt-scroll-body tfoot tr th div.dt-scroll-sizing,
+div.dt-scroll-body tfoot tr td div.dt-scroll-sizing {
+    height: 0 !important;
+    overflow: hidden !important;
+}
+
+table.dataTable thead>tr>th:active,
+table.dataTable thead>tr>td:active {
+    outline: none;
+}
+
+table.dataTable thead>tr>th.dt-orderable-asc span.dt-column-order:before,
+table.dataTable thead>tr>th.dt-ordering-asc span.dt-column-order:before,
+table.dataTable thead>tr>td.dt-orderable-asc span.dt-column-order:before,
+table.dataTable thead>tr>td.dt-ordering-asc span.dt-column-order:before {
+    position: absolute;
+    display: block;
+    bottom: 50%;
+    content: "▲";
+    content: "▲" /"";
+}
+
+table.dataTable thead>tr>th.dt-orderable-desc span.dt-column-order:after,
+table.dataTable thead>tr>th.dt-ordering-desc span.dt-column-order:after,
+table.dataTable thead>tr>td.dt-orderable-desc span.dt-column-order:after,
+table.dataTable thead>tr>td.dt-ordering-desc span.dt-column-order:after {
+    position: absolute;
+    display: block;
+    top: 50%;
+    content: "▼";
+    content: "▼" /"";
+}
+
+table.dataTable thead>tr>th.dt-orderable-asc,
+table.dataTable thead>tr>th.dt-orderable-desc,
+table.dataTable thead>tr>th.dt-ordering-asc,
+table.dataTable thead>tr>th.dt-ordering-desc,
+table.dataTable thead>tr>td.dt-orderable-asc,
+table.dataTable thead>tr>td.dt-orderable-desc,
+table.dataTable thead>tr>td.dt-ordering-asc,
+table.dataTable thead>tr>td.dt-ordering-desc {
+    position: relative;
+    padding-right: 30px;
+}
+
+table.dataTable thead>tr>th.dt-orderable-asc span.dt-column-order,
+table.dataTable thead>tr>th.dt-orderable-desc span.dt-column-order,
+table.dataTable thead>tr>th.dt-ordering-asc span.dt-column-order,
+table.dataTable thead>tr>th.dt-ordering-desc span.dt-column-order,
+table.dataTable thead>tr>td.dt-orderable-asc span.dt-column-order,
+table.dataTable thead>tr>td.dt-orderable-desc span.dt-column-order,
+table.dataTable thead>tr>td.dt-ordering-asc span.dt-column-order,
+table.dataTable thead>tr>td.dt-ordering-desc span.dt-column-order {
+    position: absolute;
+    right: 12px;
+    top: 0;
+    bottom: 0;
+    width: 12px;
+}
+
+table.dataTable thead>tr>th.dt-orderable-asc span.dt-column-order:before,
+table.dataTable thead>tr>th.dt-orderable-asc span.dt-column-order:after,
+table.dataTable thead>tr>th.dt-orderable-desc span.dt-column-order:before,
+table.dataTable thead>tr>th.dt-orderable-desc span.dt-column-order:after,
+table.dataTable thead>tr>th.dt-ordering-asc span.dt-column-order:before,
+table.dataTable thead>tr>th.dt-ordering-asc span.dt-column-order:after,
+table.dataTable thead>tr>th.dt-ordering-desc span.dt-column-order:before,
+table.dataTable thead>tr>th.dt-ordering-desc span.dt-column-order:after,
+table.dataTable thead>tr>td.dt-orderable-asc span.dt-column-order:before,
+table.dataTable thead>tr>td.dt-orderable-asc span.dt-column-order:after,
+table.dataTable thead>tr>td.dt-orderable-desc span.dt-column-order:before,
+table.dataTable thead>tr>td.dt-orderable-desc span.dt-column-order:after,
+table.dataTable thead>tr>td.dt-ordering-asc span.dt-column-order:before,
+table.dataTable thead>tr>td.dt-ordering-asc span.dt-column-order:after,
+table.dataTable thead>tr>td.dt-ordering-desc span.dt-column-order:before,
+table.dataTable thead>tr>td.dt-ordering-desc span.dt-column-order:after {
+    left: 0;
+    opacity: 0.125;
+    line-height: 9px;
+    font-size: 0.8em;
+}
+
+table.dataTable thead>tr>th.dt-orderable-asc,
+table.dataTable thead>tr>th.dt-orderable-desc,
+table.dataTable thead>tr>td.dt-orderable-asc,
+table.dataTable thead>tr>td.dt-orderable-desc {
+    cursor: pointer;
+}
+
+table.dataTable thead>tr>th.dt-orderable-asc:hover,
+table.dataTable thead>tr>th.dt-orderable-desc:hover,
+table.dataTable thead>tr>td.dt-orderable-asc:hover,
+table.dataTable thead>tr>td.dt-orderable-desc:hover {
+    outline: 2px solid rgba(0, 0, 0, 0.05);
+    outline-offset: -2px;
+}
+
+table.dataTable thead>tr>th.dt-ordering-asc span.dt-column-order:before,
+table.dataTable thead>tr>th.dt-ordering-desc span.dt-column-order:after,
+table.dataTable thead>tr>td.dt-ordering-asc span.dt-column-order:before,
+table.dataTable thead>tr>td.dt-ordering-desc span.dt-column-order:after {
+    opacity: 0.6;
+}
+
+table.dataTable thead>tr>th.sorting_desc_disabled span.dt-column-order:after,
+table.dataTable thead>tr>th.sorting_asc_disabled span.dt-column-order:before,
+table.dataTable thead>tr>td.sorting_desc_disabled span.dt-column-order:after,
+table.dataTable thead>tr>td.sorting_asc_disabled span.dt-column-order:before {
+    display: none;
+}
+
+table.dataTable thead>tr>th:active,
+table.dataTable thead>tr>td:active {
+    outline: none;
+}
+
+div.dt-scroll-body>table.dataTable>thead>tr>th,
+div.dt-scroll-body>table.dataTable>thead>tr>td {
+    overflow: hidden;
+}
+
+:root.dark table.dataTable thead>tr>th.dt-orderable-asc:hover,
+:root.dark table.dataTable thead>tr>th.dt-orderable-desc:hover,
+:root.dark table.dataTable thead>tr>td.dt-orderable-asc:hover,
+:root.dark table.dataTable thead>tr>td.dt-orderable-desc:hover,
+:root[data-bs-theme=dark] table.dataTable thead>tr>th.dt-orderable-asc:hover,
+:root[data-bs-theme=dark] table.dataTable thead>tr>th.dt-orderable-desc:hover,
+:root[data-bs-theme=dark] table.dataTable thead>tr>td.dt-orderable-asc:hover,
+:root[data-bs-theme=dark] table.dataTable thead>tr>td.dt-orderable-desc:hover {
+    outline: 2px solid rgba(255, 255, 255, 0.05);
+}
+
+.dt-layout-row{
+    @apply flex flex-row justify-between;
+}
+
+.dt-layout-row .dt-search{
+    @apply flex flex-col justify-end;
+}
+
+.dt-paging-button {
+    @apply flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 cursor-pointer
+}
+
+.dt-paging nav{
+    @apply inline-flex -space-x-px text-base h-10
+}

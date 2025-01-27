@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Validator;
 
 class LabaRugiController extends Controller
 {
@@ -110,15 +111,28 @@ class LabaRugiController extends Controller
 
     use LabaRugiTrait;
     public function index(Request $request){
+        $validator = Validator::make($request->all(), [
+            'bulan' => 'required',
+            'tahun' => 'required'
+        ]);
 
-        $this->bulan = $request->monthQuery ?? date('m');
-        $this->tahun = $request->yearQuery ?? date('Y');
-
-        $data = [];
-        foreach ($this->kodeRekening as $key => $rekening) {
-            dd($this->findLabaRugiLevel1($rekening));
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
         }
-        return $data;
+
+        try {
+            $labaRugi = $this->laba_rugi_data($request['tahun'],$request['bulan']);
+
+            return Inertia::render('LabaRugi/Index',[
+                'laba_rugi' => $labaRugi
+            ]);
+        }
+        catch (\Throwable $th){
+            return $th;
+        }
 
     }
 
@@ -127,8 +141,6 @@ class LabaRugiController extends Controller
         $rekenings = $this->mappingRekening($rekening);
 
         foreach ($rekenings as $rekening){
-
-
 
             foreach ($rekening as $data){
                 $level = explode('.', $data);
@@ -253,6 +265,10 @@ class LabaRugiController extends Controller
             'tahun' => 'required',
         ]);
 
+
+    }
+
+    private function laba_rugi_data($tahun, $bulan){
         try {
             $data = [];
             foreach ($this->kodeRekening as $index => $rekening){
@@ -261,11 +277,11 @@ class LabaRugiController extends Controller
 
                 $labaRugi = LabaRugiLevel1::select('*')
                     ->with(['level_2' => function($query) {
-                    return $query->with('level_3');
-                }])
+                        return $query->with('level_3');
+                    }])
                     ->where('level_one',$kodeRekeningLevel1)
-                    ->where('bulan',$request['bulan'])
-                    ->where('tahun',$request['tahun'])
+                    ->where('bulan',$bulan)
+                    ->where('tahun',$tahun)
                     ->first();
 
                 $rekeningLevel1 = KodeRekening::select('uraian_level_one as uraian')
@@ -277,9 +293,9 @@ class LabaRugiController extends Controller
 
                 isset($labaRugi['level_2']) ? $labaRugi['level_2']->map(function($item) use ($kodeRekeningLevel1){
                     $level2 = KodeRekening::select('uraian_level_two as uraian','level_two')
-                    ->where('level_one',$kodeRekeningLevel1)
-                    ->where('level_two',$item['level_two'])
-                    ->first();
+                        ->where('level_one',$kodeRekeningLevel1)
+                        ->where('level_two',$item['level_two'])
+                        ->first();
 
                     $item['level_two'] = isset($level2['level_two']) ? $kodeRekeningLevel1.'.'.$level2['level_two'].'.00' : null;
                     $item['uraian_level'] = $level2['uraian']??null;
@@ -287,10 +303,10 @@ class LabaRugiController extends Controller
 
                     $item['level_3']->map(function($item) use($kodeRekeningLevel1,$kodeRekeningLevel2){;
                         $level3 = KodeRekening::select('uraian_level_three as uraian','level_three')
-                        ->where('level_one',$kodeRekeningLevel1)
-                        ->where('level_two',$kodeRekeningLevel2)
-                        ->where('level_three',$item['level_three'])
-                        ->first();
+                            ->where('level_one',$kodeRekeningLevel1)
+                            ->where('level_two',$kodeRekeningLevel2)
+                            ->where('level_three',$item['level_three'])
+                            ->first();
 
                         $item['level_three'] = isset($level3['level_three']) ? $kodeRekeningLevel1.'.'.$kodeRekeningLevel2.'.'.$item['level_three'] : null;
                         $item['uraian_level'] = $level3['uraian'];
@@ -306,10 +322,7 @@ class LabaRugiController extends Controller
             return $data;
         }
         catch (\Throwable $th) {
-            return response()->json([
-                'message' => $th->getMessage(),
-                'trace' => $th->getLine()
-            ],500);
+            throw $th;
         }
     }
 

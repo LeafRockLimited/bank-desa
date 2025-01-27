@@ -1,5 +1,7 @@
 import './bootstrap';
 import '../css/app.css';
+import '../css/datatable.css';
+
 
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
@@ -27,11 +29,10 @@ createInertiaApp({
             .use(ZiggyVue)
             .use(VueSweetalert2)
             .component('VueDatePicker', VueDatePicker)
-            .component('v-select', vSelect);
-        
-        // Add moment as a global property
+            .component('v-select', vSelect)
+
         app.config.globalProperties.$moment = moment;
-        
+
         app.mount(el);
     },
     progress: {
