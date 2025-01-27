@@ -28,10 +28,11 @@
                             <!-- Rekening -->
                             <div class="">
                                 <label for="rekening" class="block text-sm font-medium text-gray-700">Rekening</label>
-                                <v-select class="mt-1" id="rekening" v-model="form.id_rekening"
-                              :label="label"
-                              :reduce="(rekenings) => rekenings.code"
-                              taggable :options="rekenings">
+                                <v-select class="mt-1" id="rekening"
+                                  v-model="form.id_rekening"
+                                  :label="label"
+                                  :reduce="(rekenings) => rekenings.code"
+                                  taggable :options="rekenings">
                                 </v-select>
                                 <p  class="text-red-600 text-sm mt-1"></p>
                             </div>
@@ -108,6 +109,9 @@ export default {
         form: {
             deep: true,
         },
+    },
+    mounted() {
+        console.log(this.form)
     },
     computed: {
         Helper() {

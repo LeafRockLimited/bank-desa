@@ -37,6 +37,7 @@
                                 <label class="text-sm" for="rekening">Akun Rekening</label>
                                 <v-select v-model="selectedRekening" class="w-full"
                                   :label="label"
+                                  :reduce="(rekening) => rekening.code"
                                   :options="rekeningList"></v-select>
                             </div>
                         </div>
