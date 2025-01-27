@@ -163,6 +163,7 @@ Route::middleware('auth')->group(function () {
         ->controller(\App\Http\Controllers\LabaRugiController::class)
         ->group(function(){
             Route::get('/','index')->name('index');
+            Route::get('export','export')->name('export');
         });
 
     Route::prefix('lpe')

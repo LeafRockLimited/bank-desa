@@ -1,5 +1,5 @@
 <script setup>
-import {ref, defineEmits, onBeforeMount, computed, onMounted} from "vue";
+import {ref, defineEmits, onBeforeMount, computed, onMounted, onBeforeUnmount} from "vue";
 
 // Definisikan props
 const props = defineProps({
@@ -133,6 +133,21 @@ async function submit() {
     }
 }
 
+const handleEscKey = (event) => {
+    if (event.key === "Escape") {
+        closeModal();
+    }
+};
+
+// Menambahkan event listener saat komponen dimuat
+onMounted(() => {
+    window.addEventListener('keydown', handleEscKey);
+});
+
+// Menghapus event listener saat komponen dihancurkan
+onBeforeUnmount(() => {
+    window.removeEventListener('keydown', handleEscKey);
+});
 
 </script>
 
@@ -142,7 +157,7 @@ async function submit() {
             'flex' : isShowModal,
             'hidden' : !isShowModal
         }"
-        class="fixed inset-0 bg-black bg-opacity-50 z-50 items-center justify-center overflow-hidden" id="popup-bg">
+        class="fixed inset-0 bg-black bg-opacity-50 z-50 items-center justify-center overflow-hidden" id="popup-bg" @click.self="closeModal">
         <!-- Popup Content -->
         <div class="bg-white rounded-2xl shadow-lg p-6 w-2/3 text-center">
             <svg @click="closeModal()" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -164,9 +179,8 @@ async function submit() {
             <label>
                 <div class="mb-5 w-full h-11 rounded-3xl border border-gray-300 justify-between items-center inline-flex">
                     <h2 :class="{
-                        'text-gray-900/20': !fileName,
-                        'text-black' : filename
-                    }" class="text-sm font-normal leading-snug pl-4"> {{fileName??'No file chosen'}} </h2>
+                        '!text-gray-900/20': !fileName,
+                    }" class="text-sm text-black font-normal leading-snug pl-4"> {{fileName??'No file chosen'}} </h2>
                     <input class="hidden" type="file" multiple
                            :accept="allowedExtensions.join(',')"
                            @change="handleFileChange" />

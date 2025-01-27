@@ -178,15 +178,12 @@ class LabaRugiController extends Controller
             'total_till_this_month' => null,
             'detail' => []
         ]);
-        dd($tempData);
 
         $reduce = array_reduce($resData,function($carry,$item){
             $carry[] = collect($item['detail'])->first()['detail'];
 
             return $carry;
         },[]);
-
-        dd($reduce);
 
 
     }
@@ -248,6 +245,72 @@ class LabaRugiController extends Controller
         },$rekening['sub']);
 
         return $rekening;
+    }
+
+    public function export(Request $request){
+        $request = $request->validate([
+            'bulan' => 'required',
+            'tahun' => 'required',
+        ]);
+
+        try {
+            $data = [];
+            foreach ($this->kodeRekening as $index => $rekening){
+
+                $kodeRekeningLevel1 = $rekening['key'];
+
+                $labaRugi = LabaRugiLevel1::select('*')
+                    ->with(['level_2' => function($query) {
+                    return $query->with('level_3');
+                }])
+                    ->where('level_one',$kodeRekeningLevel1)
+                    ->where('bulan',$request['bulan'])
+                    ->where('tahun',$request['tahun'])
+                    ->first();
+
+                $rekeningLevel1 = KodeRekening::select('uraian_level_one as uraian')
+                    ->where('level_one',$kodeRekeningLevel1)
+                    ->first();
+
+                $labaRugi['level_one'] = $kodeRekeningLevel1.'.0'.'.00';
+                $labaRugi['uraian_level'] = $rekeningLevel1['uraian'];
+
+                isset($labaRugi['level_2']) ? $labaRugi['level_2']->map(function($item) use ($kodeRekeningLevel1){
+                    $level2 = KodeRekening::select('uraian_level_two as uraian','level_two')
+                    ->where('level_one',$kodeRekeningLevel1)
+                    ->where('level_two',$item['level_two'])
+                    ->first();
+
+                    $item['level_two'] = isset($level2['level_two']) ? $kodeRekeningLevel1.'.'.$level2['level_two'].'.00' : null;
+                    $item['uraian_level'] = $level2['uraian']??null;
+                    $kodeRekeningLevel2 = $level2['level_two'];
+
+                    $item['level_3']->map(function($item) use($kodeRekeningLevel1,$kodeRekeningLevel2){;
+                        $level3 = KodeRekening::select('uraian_level_three as uraian','level_three')
+                        ->where('level_one',$kodeRekeningLevel1)
+                        ->where('level_two',$kodeRekeningLevel2)
+                        ->where('level_three',$item['level_three'])
+                        ->first();
+
+                        $item['level_three'] = isset($level3['level_three']) ? $kodeRekeningLevel1.'.'.$kodeRekeningLevel2.'.'.$item['level_three'] : null;
+                        $item['uraian_level'] = $level3['uraian'];
+                        return $item;
+                    });
+
+                    return $item;
+                }): null;
+
+                $data[] = $labaRugi??null;
+            }
+
+            return $data;
+        }
+        catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage(),
+                'trace' => $th->getLine()
+            ],500);
+        }
     }
 
 }
