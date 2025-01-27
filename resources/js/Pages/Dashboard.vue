@@ -9,7 +9,8 @@
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 grid grid-cols-1 gap-6">
-                <p class="text-3xl font-semibold text-neutral-500">Overview</p>
+
+
 
                 <div class="grid grid-cols-1 lg:grid-flow-row lg:grid-cols-3 gap-6">
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -37,7 +38,7 @@
                                         </badge>
                                     </div>
                                 </p>
-                                <span class="text-gray-500 text-xs inline-flex items-center"> 
+                                <span class="text-gray-500 text-xs inline-flex items-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m8 18.98l-.708-.713l3.095-3.094H3v-1h7.387l-3.095-3.094l.708-.713l4.308 4.307zm8-5.365l-4.308-4.307L16 5l.708.714l-3.094 3.094H21v1h-7.386l3.094 3.094z"/></svg>
                                     <span>Perbandingan bulan lalu</span>
                                 </span>
@@ -45,7 +46,7 @@
                         <!-- end jumlah nominal transaksi -->
 
 
-                        
+
                     </div>
 
 
@@ -69,7 +70,7 @@
                                     </badge>
                                 </div>
                             </div>
-                            <span class="text-gray-500 text-xs inline-flex items-center"> 
+                            <span class="text-gray-500 text-xs inline-flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m8 18.98l-.708-.713l3.095-3.094H3v-1h7.387l-3.095-3.094l.708-.713l4.308 4.307zm8-5.365l-4.308-4.307L16 5l.708.714l-3.094 3.094H21v1h-7.386l3.094 3.094z"/></svg>
                                 <span>Perbandingan tahun lalu</span>
                             </span>

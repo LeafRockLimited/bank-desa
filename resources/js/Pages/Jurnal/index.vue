@@ -15,16 +15,19 @@
                         <p class=" text-lg font-bold">Jurnal</p>
                         <!-- description -->
                         <p> Isi transaksi pada halaman jurnal</p>
-                        <div class="mt-4">
-                            <Link :href="route('jurnal.create')">
-                                <PrimaryButton class="">+ Tambah</PrimaryButton>
-                            </Link>
-                        </div>
-                        <div>
-                            <form @submit.prevent="postData">
-                                <input type="file" @change="handleFileChange">
-                                <button class="btn btn-primary">Upload</button>
-                            </form>
+                        <div class="flex flex-row space-x-2">
+                            <div class="mt-4">
+                                <Link :href="route('jurnal.create')">
+                                    <PrimaryButton class="">+ Tambah</PrimaryButton>
+                                </Link>
+                            </div>
+                            <div>
+<!--                                    <input type="file" @change="handleFileChange">-->
+                                <InputFile :allowedExtensions="['xlsx']" :url="route('jurnal.import')" @update:showModal="toggleModal" :show-modal="showModal" v-model="uploadedFiles"></InputFile>
+                                <button @click="toggleModal" type="button" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                    Upload
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -101,9 +104,11 @@ import CardBody from '@/Components/CardBody.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue'
 import SecondaryButton from '@/Components/SecondaryButton.vue'
 import Helper from '@/Helper';
+import InputFile from "@/Components/InputFile.vue";
 
 export default {
     components:{
+        InputFile,
         AuthenticatedLayout,Head,Link, Table, CardBody,PrimaryButton,SecondaryButton
     },
     props: {
@@ -150,7 +155,8 @@ export default {
             page: 1,
             lengthQuery: this.length,
             searchQuery: this.search,
-            uploadedFile:null
+            uploadedFiles:[],
+            showModal:false,
         }
     },
     methods: {
@@ -178,6 +184,9 @@ export default {
         },
         handleFileChange(event){
           this.uploadedFile = event.target.files[0]
+        },
+        toggleModal(value){
+            this.showModal = value??!this.showModal
         }
     }
 

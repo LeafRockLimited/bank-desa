@@ -192,7 +192,6 @@ class JurnalController extends Controller
                 'message' => 'Jurnal berhasil diimport'
             ]);
         } catch (\Throwable $th) {
-            dd($th);
             return response()->json([
                 'success' => false,
                 'error' => $th,
