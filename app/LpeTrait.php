@@ -25,32 +25,32 @@ trait LpeTrait
         $bulan = $request->bulan??date('m');
 
         $saldoAwalModalDesa = Jurnal::whereHas('rekening', function ($query) {
-            $query->where('nomor_rekening', 'ilike' ,'3.1.01.01%');
+            $query->where('nomor_rekening', 'like' ,'3.1.01.01%');
         })->where('keterangan', 'Saldo Awal')->sum('jumlah');
 
         $saldoAwalModalMasyarakat = Jurnal::whereHas('rekening', function ($query) {
-            $query->where('nomor_rekening', 'ilike' ,'3.1.02.01%');
+            $query->where('nomor_rekening', 'like' ,'3.1.02.01%');
         })->where('keterangan', 'Saldo Awal')->sum('jumlah');
 
 
         $saldoModalDesa = Jurnal::whereHas('rekening', function ($query) {
-            $query->where('nomor_rekening', 'ilike' ,'3.1.01.01%');
+            $query->where('nomor_rekening', 'like' ,'3.1.01.01%');
         })->sum('jumlah') - $saldoAwalModalDesa;
 
         $saldoModalMasyarakat = Jurnal::whereHas('rekening', function ($query) {
-            $query->where('nomor_rekening', 'ilike' ,'3.1.02.01%');
+            $query->where('nomor_rekening', 'like' ,'3.1.02.01%');
         })->sum('jumlah') - $saldoAwalModalMasyarakat;
 
 
         $penyertaanModalAkhir = $saldoAwalModalDesa + $saldoAwalModalMasyarakat + $saldoModalDesa + $saldoModalMasyarakat;
 
         $saldoLabaTidakDicadangkan = Jurnal::whereHas('rekening', function ($query) {
-            $query->where('nomor_rekening', 'ilike' ,'3.3.01%');
+            $query->where('nomor_rekening', 'like' ,'3.3.01%');
         })->where('keterangan', 'Saldo Awal')->sum('jumlah');
 
 
         $saldoLabaDicadangkan = Jurnal::whereHas('rekening', function ($query) {
-            $query->where('nomor_rekening', 'ilike' ,'3.1.02%');
+            $query->where('nomor_rekening', 'like' ,'3.1.02%');
         })->where('keterangan', 'Saldo Awal')->sum('jumlah');
 
 
@@ -58,12 +58,12 @@ trait LpeTrait
 
 
         $bagiHasilPenyertaanModalDesa = Jurnal::whereHas('rekening', function ($query) {
-            $query->where('nomor_rekening', 'ilike' ,'3.2.01.01%');
+            $query->where('nomor_rekening', 'like' ,'3.2.01.01%');
         })->where('keterangan', 'Saldo Awal')->sum('jumlah');
 
 
         $bagiHasiPenyertaanModalMasyarakat = Jurnal::whereHas('rekening', function ($query) {
-            $query->where('nomor_rekening', 'ilike' ,'3.2.02.01%');
+            $query->where('nomor_rekening', 'like' ,'3.2.02.01%');
         })->where('keterangan', 'Saldo Awal')->sum('jumlah');
 
 
@@ -71,7 +71,7 @@ trait LpeTrait
 
 
         $modalDonasiSumbangan = Jurnal::whereHas('rekening', function ($query) {
-            $query->where('nomor_rekening', 'ilike' ,'3.4.01.01%');
+            $query->where('nomor_rekening', 'like' ,'3.4.01.01%');
         })->where('keterangan', 'Saldo Awal')->sum('jumlah');
 
         $ekuitasAkhir = $penyertaanModalAkhir + $saldoLaba + $modalDonasiSumbangan;
