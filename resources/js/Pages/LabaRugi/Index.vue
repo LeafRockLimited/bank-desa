@@ -12,7 +12,8 @@
         <CardBody>
 
             <template v-slot:content>
-                <table ref="dataTable" id="dataTable" class="min-w-full table-auto rounded-lg" style="min-width:1000px">
+
+                <table ref="dataTable" id="dataTable" class=" whitespace-nowrap" style="width: 1000px">
                     <thead>
                         <tr class="">
                             <th></th>
@@ -78,7 +79,8 @@ export default {
 
 
         const table = new DataTable('#dataTable',{
-            pageLength:20,
+            pageLength:10,
+            autoWidth: false,
             data: data,
             columns: [
                 {

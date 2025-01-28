@@ -17,6 +17,7 @@ import moment from 'moment';
 import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
+import JSZip from 'jszip';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -32,6 +33,7 @@ createInertiaApp({
             .component('v-select', vSelect)
 
         app.config.globalProperties.$moment = moment;
+        app.config.globalProperties.$JSZip = JSZip;
 
         app.mount(el);
     },

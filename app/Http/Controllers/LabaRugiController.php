@@ -111,20 +111,11 @@ class LabaRugiController extends Controller
 
     use LabaRugiTrait;
     public function index(Request $request){
-        $validator = Validator::make($request->all(), [
-            'bulan' => 'required',
-            'tahun' => 'required'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
-        }
+        $tahun = $request->tahun??date('Y');
+        $bulan = $request->bulan??date('m');
 
         try {
-            $labaRugi = $this->laba_rugi_data($request['tahun'],$request['bulan']);
+            $labaRugi = $this->laba_rugi_data($tahun,$bulan);
 
             return Inertia::render('LabaRugi/Index',[
                 'laba_rugi' => $labaRugi
