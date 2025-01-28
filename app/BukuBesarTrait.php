@@ -38,7 +38,7 @@ trait BukuBesarTrait
         $bukuBesar->debit = $jurnal->debit;
         $bukuBesar->kredit = $jurnal->kredit;
         $latestBukuBesar = $this->getLatestBukuBesarByAccount($jurnal);
-        $bukuBesar->saldo = $latestBukuBesar->saldo + ($bukuBesar->debit - $bukuBesar->kredit);
+        $bukuBesar->saldo = ($latestBukuBesar->saldo??0) + ($bukuBesar->debit - $bukuBesar->kredit);
         $bukuBesar->save();
     }
 
