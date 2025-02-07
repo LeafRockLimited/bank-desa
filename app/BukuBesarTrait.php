@@ -33,7 +33,21 @@ trait BukuBesarTrait
         }
     }
 
-    public function updateBukuBesar(Jurnal $jurnal){
+/*************  ✨ Codeium Command ⭐  *************/
+/**
+ * Updates the BukuBesar record associated with the given Jurnal.
+ * 
+ * Retrieves the BukuBesar related to the Jurnal, updates its debit and kredit
+ * values to match those of the Jurnal, and calculates the new saldo based on
+ * the latest BukuBesar for the same account. Saves the updated BukuBesar to
+ * the database.
+ * 
+ * @param  \App\Models\Jurnal  $jurnal  The journal entry containing updated
+ *                                      transaction details.
+ * @return void
+ */
+
+/******  ea74f56d-f431-4cd3-b724-9baaf0f44c25  *******/    public function updateBukuBesar(Jurnal $jurnal){
         $bukuBesar = $jurnal->buku_besar;
         $bukuBesar->debit = $jurnal->debit;
         $bukuBesar->kredit = $jurnal->kredit;

@@ -46,6 +46,7 @@ class PinjamanController extends Controller
             'jenis_pinjaman' => $request->jenis_pinjaman,
             'jumlah_pinjaman' => $jumlahPinjaman,
             'bunga' => $bunga,
+            'nominal_bunga' =>$jumlahPinjaman - $nominalDiterima,
             'nominal_diterima' => $nominalDiterima,
             'tanggal_pengajuan' => $request->tanggal_pengajuan,
             'tanggal_disetujui' => $request->tanggal_disetujui,

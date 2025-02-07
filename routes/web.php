@@ -149,13 +149,17 @@ Route::middleware('auth')->group(function () {
             Route::delete('delete/{id}', 'destroy')->name('delete'); // Menghapus transaksi
         });
 
+    
 
     Route::prefix('neraca')
         ->name('neraca.')
         ->controller(NeracaController::class)
         ->group(function () {
             Route::get('/', 'index')->name('index');
+            Route::get('bkd','index_bkd')->name('bkd');
             Route::get('show', 'show')->name('show');
+            Route::get('download_neraca_bkd', 'export_neraca_bkd')->name('download_neraca_bkd');
+            Route::get('download_laba_rugi_bkd', 'export_laba_rugi_bkd')->name('export_laba_rugi_bkd');
         });
 
     Route::prefix('laba_rugi')

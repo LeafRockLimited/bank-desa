@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
     <Head title="Laba Rugi"/>
 
     <AuthenticatedLayout>
@@ -284,4 +284,4 @@ export default {
 
     }
 };
-</script>
+</script> -->

@@ -2,25 +2,25 @@
 
 namespace App\Exports;
 
-use Carbon\CarbonImmutable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
-use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use Carbon\Carbon;
+use Carbon\CarbonImmutable;
+use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 
-class LabaRugiExport implements FromCollection,WithHeadings,
-WithColumnFormatting,WithCustomStartCell, WithEvents, WithStyles
+class NeracaExport implements FromCollection, WithHeadings, WithColumnFormatting,
+WithEvents, WithStyles, WithCustomStartCell
 {
 
     protected $data;
     protected $tahun;
     protected $bulan;
     protected $lastDay;
-
     public function __construct($data,$tahun, $bulan)
     {
         $this->data = $data;
@@ -33,7 +33,6 @@ WithColumnFormatting,WithCustomStartCell, WithEvents, WithStyles
 
         $this->lastDay = $formattedBulan->endOfMonth()->day; 
     }
-
 
     public function headings(): array
     {
@@ -61,32 +60,25 @@ WithColumnFormatting,WithCustomStartCell, WithEvents, WithStyles
     }
 
     /**
-    * @return \Illuminate\Support\Collection
-    */
+     * @return \Illuminate\Support\Collection
+     */
     public function collection()
     {
         $data = $this->data;
-        
-        $mapping = [
-            ['A', 'PENDAPATAN', '', 'B', 'PENGELUARAN', ''],
-            ['1', 'Bunga Pinjaman Mingguan', $data['pendapatan']['bunga']['bunga_mingguan'], '1', 'Biaya Pengawasan', $data['pengeluaran']['biaya_pengawasan']],
-            ['2', 'Bunga Pinjaman Bulanan', $data['pendapatan']['bunga']['bunga_bulanan'], '2', 'Bunga Pinjaman BRI', $data['pengeluaran']['bunga_pinjaman_bri']],
-            ['3', 'Bunga Pinjaman Musiman', $data['pendapatan']['bunga']['bunga_musiman'], '3', 'Bunga Pinjaman BKD Lain', $data['pengeluaran']['bunga_pinjaman_bkd_lain']],
-            ['', 'Jumlah', $data['pendapatan']['bunga']['jumlah'], '4', 'Bunga Lainnya', $data['pengeluaran']['bunga_lainnya']],
-            ['1', 'Bunga Giro', $data['pendapatan']['giro']['bunga_giro'], '5', 'Bunga Tabanas', $data['pengeluaran']['bunga_tabanas']],
-            ['2', 'Bunga Britama', $data['pendapatan']['giro']['bunga_britama'], '6', 'Gaji Komisi', $data['pengeluaran']['gaji_komisi']],
-            ['3', 'Bunga Simpedes', $data['pendapatan']['giro']['bunga_simpedes'], '7', 'Gaji JTU/ Dana Usaha', $data['pengeluaran']['gaji_jtu']],
-            ['', 'Jumlah', $data['pendapatan']['giro']['jumlah'], '8', 'PH. Aktiva tetap & Invent', $data['pengeluaran']['ph_aktiva_tetap']],
-            ['1', 'Pendapatan Lainnya', $data['pendapatan']['pendapatan']['pendapatan_lainnya'], '9', 'Penyisihan PH. Pinjaman', $data['pengeluaran']['penyisihan_ph_pinjaman']],
-            ['2', 'Pendapatan Pinj. yg di Ph.', $data['pendapatan']['pendapatan']['pendaptan_pinj_ph'], '10', 'Biaya Lainnya', $data['pengeluaran']['biaya_lainnya']],
-            ['', 'Jumlah', $data['pendapatan']['pendapatan']['jumlah'], '11', 'Premi Asuransi', $data['pengeluaran']['premi_asuransi']],
-            ['','','','','',''],
-            ['','JUMLAH',$data['pendapatan']['total'],'','JUMLAH',$data['pengeluaran']['total']],
-            ['Laba / Rugi Tahun Berjalan','','','','',$data['total']]
-        ];
-        
 
-        return collect($mapping);
+        $aktiva = [
+            ['A', 'Aktiva', '', 'B', 'Pasiva', ''],
+            ['1', 'Kas', $data['aktiva']['kas_tunai'], '1', 'Tabungan', $data['pasiva']['simpanan']],
+            ['2', 'Antar Bank', $data['aktiva']['antar_bank'], '2', 'Antar Bank Pasiva', $data['pasiva']['antar_bank']],
+            ['3', 'Pinjaman', $data['aktiva']['pinjaman'], '3', 'Pinjaman BKD Lain', $data['pasiva']['pinjaman_bkd_lain']],
+            ['4', 'Pinjaman BKD Lain', $data['aktiva']['pinjaman_bkd_lain_aktiva'], '4', 'Pinjaman Lainnya', $data['pasiva']['pinjaman_lainnya']],
+            ['5', 'Harta Tetap', $data['aktiva']['harta_tetap'], '5', 'Modal', $data['pasiva']['modal']],
+            ['6', 'Akumulasi Penyusutan', $data['aktiva']['akumulasi_penyusutan'], '6', 'Rupa-Rupa Pasiva', $data['pasiva']['rupa_pasiva']],
+            ['', '', '', '7', 'Laba Rugi Tahun Berjalan', $data['pasiva']['laba_rugi']['total']??0],
+            ['', 'JUMLAH (=ASSET)', $data['aktiva']['total']??0, '', 'JUMLAH', $data['pasiva']['total']??0],
+        ];
+
+        return collect($aktiva);
     }
 
 
@@ -101,7 +93,7 @@ WithColumnFormatting,WithCustomStartCell, WithEvents, WithStyles
                 $sheet->mergeCells('A3:F3');
 
                 // **Set Teks Judul Uppercase**
-                $sheet->setCellValue('A1', strtoupper('perhitungan rugi/laba'));
+                $sheet->setCellValue('A1', strtoupper('Neraca'));
                 $sheet->setCellValue('A2', strtoupper('Badan Kredit Desa (BKD) Rembang'));
                 $sheet->setCellValue('A3', strtoupper("$this->lastDay $this->bulan  $this->tahun"));
 
@@ -117,7 +109,7 @@ WithColumnFormatting,WithCustomStartCell, WithEvents, WithStyles
                 
 
 
-                $cellRange = "A6:F21";
+                $cellRange = "A6:F15";
                 $sheet->getStyle($cellRange)->applyFromArray([
                     'borders' => [
                         'allBorders' => [
@@ -126,8 +118,6 @@ WithColumnFormatting,WithCustomStartCell, WithEvents, WithStyles
                         ],
                     ],
                 ]);
-
-                $sheet->mergeCells('A21:E21');
 
                 // **Mengatur lebar kolom otomatis agar fit dengan isi**
                 foreach (range('A', 'F') as $col) {
@@ -145,4 +135,5 @@ WithColumnFormatting,WithCustomStartCell, WithEvents, WithStyles
             'E1' => ['font' => ['bold' => true, 'size' => 12]], // Bold header Pasiva
         ];
     }
+
 }
