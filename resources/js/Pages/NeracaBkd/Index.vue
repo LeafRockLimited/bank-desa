@@ -192,7 +192,7 @@ const laba_rugi_pendapatan = computed(() => {
             label: 'Bunga Pinjaman Musiman',
             saldo: {
                 class: 'text-right',
-                value: Helper.rupiah(labaRugi.pendapatan.bunga.musiman ?? 0)
+                value: Helper.rupiah(labaRugi.pendapatan.bunga.bunga_musiman ?? 0)
             }
         },
         {
