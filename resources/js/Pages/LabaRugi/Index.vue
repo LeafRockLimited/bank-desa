@@ -33,11 +33,11 @@
 <script>
 import AuthenticatedLayout from '@/Layouts/AdminLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
-import Table from '@/Components/Table.vue';
-import CardBody from '@/Components/CardBody.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TahunFilter from "@/Components/TahunFilter.vue";
-import BulanFilter from "@/Components/BulanFilter.vue";
+import Table from '@/components/Table.vue';
+import CardBody from '@/components/CardBody.vue';
+import PrimaryButton from '@/components/PrimaryButton.vue';
+import TahunFilter from "@/components/TahunFilter.vue";
+import BulanFilter from "@/components/BulanFilter.vue";
 import moment from "moment";
 import $ from "jquery";
 import DataTable from 'datatables.net-dt'

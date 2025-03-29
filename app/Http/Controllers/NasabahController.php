@@ -47,19 +47,26 @@ class NasabahController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Request  $request)
+    public function show(Request $request)
     {
-        $length = $request->length??10;
-        $search = $request->searchQuery??null;
-
-        $nasabahs = Nasabah::when($search,function($sub) use($search){
-            $sub->whereAny(['nama_lengkap','alamat','email'],'ilike',"%$search%");
-        })
-        ->orderBy('created_at','DESC')
-        ->paginate($length);
-
-        return $nasabahs;
+        $length = $request->input('length', 10);
+        $search = $request->input('searchQuery', null);
+        $sortBy = $request->input('sortBy', 'created_at'); // default sorting
+        $sortOrder = $request->input('sortOrder', 'DESC'); // default DESC
+    
+        $nasabahs = Nasabah::when($search, function ($query) use ($search) {
+                $query->where(function ($sub) use ($search) {
+                    $sub->where('nama_lengkap', 'ILIKE', "%{$search}%")
+                        ->orWhere('alamat', 'ILIKE', "%{$search}%")
+                        ->orWhere('email', 'ILIKE', "%{$search}%");
+                });
+            })
+            ->orderBy($sortBy, $sortOrder)
+            ->paginate($length);
+    
+        return response()->json($nasabahs);
     }
+    
 
     /**
      * Show the form for editing the specified resource.

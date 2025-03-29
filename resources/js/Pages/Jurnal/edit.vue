@@ -89,11 +89,11 @@
 
 import {Head, useForm} from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AdminLayout.vue";
-import CardBody from "@/Components/CardBody.vue";
+import CardBody from "@/components/CardBody.vue";
 import moment from "moment";
 import Helper from "@/Helper.js";
-import InputCurrency from "@/Components/InputCurrency.vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
+import InputCurrency from "@/components/InputCurrency.vue";
+import PrimaryButton from "@/components/PrimaryButton.vue";
 import Toast from "@/Toast.js";
 import jurnal from "@/Pages/Jurnal/index.vue";
 

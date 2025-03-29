@@ -61,7 +61,7 @@
 <script>
 import AuthenticatedLayout from '@/Layouts/AdminLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import CardBody from '@/Components/CardBody.vue';
+import CardBody from '@/components/CardBody.vue';
 
 export default {
     components: {

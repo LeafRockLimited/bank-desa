@@ -112,8 +112,8 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AdminLayout.vue';
 import { onMounted, ref, watch } from "vue";
-import CardBody from '@/Components/CardBody.vue';
-import DateFilter from '@/Components/DateFilter.vue';
+import CardBody from '@/components/CardBody.vue';
+import DateFilter from '@/components/DateFilter.vue';
 import NeracaBkdTable from './Components/Table.vue'
 import { computed } from 'vue';
 import Helper from '@/Helper';

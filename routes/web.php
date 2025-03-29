@@ -10,6 +10,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\JenisRekeningController;
 use App\Http\Controllers\KodeRekeningController;
 use App\Http\Controllers\NeracaController;
+use App\Http\Controllers\SimpananController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -107,6 +108,15 @@ Route::middleware('auth')->group(function () {
             Route::get('setting-angsuran', 'setting_angsuran')->name('setting_angsuran');
         });
 
+    Route::prefix('simpanan')
+        ->name('simpanan.')
+        ->controller(SimpananController::class)
+        ->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('store','store')->name('store');
+            Route::post('deposit', 'deposit')->name('deposit');
+        });
+
     Route::prefix('kode_rekening')
         ->name('kode_rekening.')
         ->controller(KodeRekeningController::class)
@@ -131,7 +141,7 @@ Route::middleware('auth')->group(function () {
             Route::get('create', 'create')->name('create');
             Route::post('store', 'store')->name('store');
             Route::get('edit/{id}', 'edit')->name('edit');
-            Route::put('update/{id}','update')->name('update');
+            Route::put('update/{id}', 'update')->name('update');
             Route::delete('delete/{id}', 'destroy')->name('delete'); // Menghapus transaksi
             Route::post('import', 'import')->name('import');
         });
@@ -149,14 +159,14 @@ Route::middleware('auth')->group(function () {
             Route::delete('delete/{id}', 'destroy')->name('delete'); // Menghapus transaksi
         });
 
-    
+
 
     Route::prefix('neraca')
         ->name('neraca.')
         ->controller(NeracaController::class)
         ->group(function () {
             Route::get('/', 'index')->name('index');
-            Route::get('bkd','index_bkd')->name('bkd');
+            Route::get('bkd', 'index_bkd')->name('bkd');
             Route::get('show', 'show')->name('show');
             Route::get('download_neraca_bkd', 'export_neraca_bkd')->name('download_neraca_bkd');
             Route::get('download_laba_rugi_bkd', 'export_laba_rugi_bkd')->name('export_laba_rugi_bkd');
@@ -165,23 +175,23 @@ Route::middleware('auth')->group(function () {
     Route::prefix('laba_rugi')
         ->name('laba_rugi.')
         ->controller(\App\Http\Controllers\LabaRugiController::class)
-        ->group(function(){
-            Route::get('/','index')->name('index');
-            Route::get('export','export')->name('export');
+        ->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('export', 'export')->name('export');
         });
 
     Route::prefix('lpe')
         ->name('lpe.')
         ->controller(\App\Http\Controllers\LpeController::class)
-        ->group(function (){
-            Route::get('download','download')->name('download');
+        ->group(function () {
+            Route::get('download', 'download')->name('download');
         });
 
     Route::prefix('lak')
         ->name('lak.')
         ->controller(\App\Http\Controllers\LakController::class)
-        ->group(function (){
-            Route::get('download','download')->name('download');
+        ->group(function () {
+            Route::get('download', 'download')->name('download');
         });
 });
 

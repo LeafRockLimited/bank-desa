@@ -77,13 +77,13 @@
 
 import AuthenticatedLayout from '@/Layouts/AdminLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import Table from '@/Components/Table.vue';
-import CardBody from '@/Components/CardBody.vue';
+import Table from '@/components/Table.vue';
+import CardBody from '@/components/CardBody.vue';
 import axios from 'axios';
-import PrimaryButton from '@/Components/PrimaryButton.vue'
+import PrimaryButton from '@/components/PrimaryButton.vue'
 import Helper from '@/Helper.js'
-import NasabahSelect from '@/Components/NasabahSelect.vue';
-import PinjamanSelect from '@/Components/PinjamanSelect.vue';
+import NasabahSelect from '@/components/NasabahSelect.vue';
+import PinjamanSelect from '@/components/PinjamanSelect.vue';
 
 export default {
   components: {

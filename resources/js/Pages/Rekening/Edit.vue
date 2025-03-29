@@ -50,8 +50,8 @@
  <script>
  import AuthenticatedLayout from '@/Layouts/AdminLayout.vue';
  import { Head,Link, useForm  } from '@inertiajs/vue3';
- import PrimaryButton from '@/Components/PrimaryButton.vue'
- import CardBody from '@/Components/CardBody.vue';
+ import PrimaryButton from '@/components/PrimaryButton.vue'
+ import CardBody from '@/components/CardBody.vue';
  import Toast from '@/Toast';
  
  export default {

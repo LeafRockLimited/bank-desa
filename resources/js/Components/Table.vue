@@ -95,10 +95,10 @@
 
 <script>
 
-import DangerButton from '@/Components/DangerButton.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
+import DangerButton from '@/components/DangerButton.vue';
+import SecondaryButton from '@/components/SecondaryButton.vue';
 import Toast from '@/Toast';
-import PrimaryButton from "@/Components/PrimaryButton.vue";
+import PrimaryButton from "@/components/PrimaryButton.vue";
 export default {
     components: {
         PrimaryButton,

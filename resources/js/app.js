@@ -19,6 +19,8 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 
 import JSZip from 'jszip';
 
+import { Icon } from '@iconify/vue';
+
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({
@@ -31,6 +33,7 @@ createInertiaApp({
             .use(VueSweetalert2)
             .component('VueDatePicker', VueDatePicker)
             .component('v-select', vSelect)
+            .component('Icon', Icon);
 
         app.config.globalProperties.$moment = moment;
         app.config.globalProperties.$JSZip = JSZip;

@@ -127,14 +127,14 @@
 <script>
 import AuthenticatedLayout from '@/Layouts/AdminLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
-import Table from '@/Components/Table.vue';
-import CardBody from '@/Components/CardBody.vue';
+import Table from '@/components/Table.vue';
+import CardBody from '@/components/CardBody.vue';
 import axios from 'axios';
-import PrimaryButton from '@/Components/PrimaryButton.vue'
+import PrimaryButton from '@/components/PrimaryButton.vue'
 import Helper from '@/Helper.js'
-import TahunFilter from '@/Components/TahunFilter.vue'
-import BulanFilter from '@/Components/BulanFilter.vue'
-import SecondaryButton from '@/Components/SecondaryButton.vue';
+import TahunFilter from '@/components/TahunFilter.vue'
+import BulanFilter from '@/components/BulanFilter.vue'
+import SecondaryButton from '@/components/SecondaryButton.vue';
 export default {
     components: {
         AuthenticatedLayout, Head, Link, Table, CardBody, PrimaryButton, TahunFilter, BulanFilter,SecondaryButton
