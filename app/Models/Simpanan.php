@@ -11,6 +11,10 @@ class Simpanan extends Model
     use HasFactory;
     protected $fillable = ['nasabah_id', 'rekening_simpanan' ,'jenis_simpanan_id', 'tanggal_buka', 'saldo_awal', 'saldo_terkini', 'status_simpanan'];
 
+    protected $casts = [
+        'rekening_simpanan' => 'string',
+    ];
+
     protected static function boot()
     {
         parent::boot();
@@ -37,6 +41,9 @@ class Simpanan extends Model
         });
     }
 
+
+
+    
     public function nasabah()
     {
         return $this->belongsTo(Nasabah::class);

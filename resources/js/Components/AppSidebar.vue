@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineComponent } from "vue";
-import { Home, Inbox, Calendar, Search, Settings } from "lucide-vue-next";
+import { Home, Inbox, Calendar, Search, Settings, Banknote } from "lucide-vue-next";
 import {
   Sidebar,
   SidebarContent,
@@ -29,6 +29,12 @@ const items = [
       route().current("jenis_rekening.*") || route().current("kode_rekening.*"),
   },
   {
+    title: "Tabungan",
+    url: route("simpanan.index"),
+    icon: Banknote,
+    active: route().current("neraca.bkd"),
+  },
+  {
     title: "Pinjaman",
     url: route("pinjaman.index"),
     icon: Calendar,
@@ -52,6 +58,7 @@ const items = [
     icon: Settings,
     active: route().current("neraca.bkd"),
   },
+  
 ];
 </script>
 

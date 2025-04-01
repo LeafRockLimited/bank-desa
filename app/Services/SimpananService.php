@@ -57,6 +57,7 @@ class SimpananService
             return new Exception('Simpanan Tidak Ditemukan');
         }
 
+
         $simpanan->saldo_terkini = $simpanan->saldo_terkini + $data['nominal'];
         $simpanan->save();
         dispatch(new ProsesSimpanJob($simpanan, 'setoran', $data['nominal'], now(), 'Setoran'));
@@ -207,5 +208,12 @@ class SimpananService
         ->orWhere('nasabah_id', $request->nasabah_id)->first();
 
         return $simpanan;
+    }
+
+    public function getTabunganByNasabahId($nasabah_id){
+        $simpanans = Simpanan::where('nasabah_id',$nasabah_id);
+
+        return $simpanans;
+        
     }
 }

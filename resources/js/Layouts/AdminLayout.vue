@@ -3,6 +3,7 @@ import AppSidebar from '@/components/AppSidebar.vue';
 import SidebarProvider from '@/components/ui/sidebar/SidebarProvider.vue';
 import NavigationMenu from '@/components/Navigation/NavigationMenu.vue';
 import { ref } from 'vue';
+import Toaster from '@/components/ui/toast/Toaster.vue';
 
 // Sidebar toggle
 const showingSidebar = ref(true);
@@ -10,6 +11,7 @@ const showingNavigationDropdown = ref(false);
 </script>
 
 <template>
+<Toaster />
 <SidebarProvider>
     <AppSidebar />
     <main class="min-h-screen w-full">
@@ -19,5 +21,5 @@ const showingNavigationDropdown = ref(false);
     </main>
 </SidebarProvider>
 
-</template>import NavigationMenu from '@/components/ui/navigation-menu/NavigationMenu.vue';
+</template>
 

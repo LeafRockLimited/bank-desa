@@ -8,6 +8,7 @@ use App\Http\Controllers\PinjamanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\JenisRekeningController;
+use App\Http\Controllers\JenisSimpananController;
 use App\Http\Controllers\KodeRekeningController;
 use App\Http\Controllers\NeracaController;
 use App\Http\Controllers\SimpananController;
@@ -115,6 +116,15 @@ Route::middleware('auth')->group(function () {
             Route::get('/', 'index')->name('index');
             Route::post('store','store')->name('store');
             Route::post('deposit', 'deposit')->name('deposit');
+
+            Route::get('tabungan_nasabah/{nasabah_id}','tabungan_nasabah')->name('tabungan_nasabah');
+
+            Route::prefix('jenis')
+            ->name('jenis.')
+            ->controller(JenisSimpananController::class)
+            ->group(function () {
+                Route::get('data','data')->name('data');
+            });
         });
 
     Route::prefix('kode_rekening')

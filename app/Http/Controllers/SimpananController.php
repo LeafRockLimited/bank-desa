@@ -106,4 +106,18 @@ class SimpananController extends Controller
             ],500);
         }
     }
+
+    public function tabungan_nasabah($nasabah_id, Request $request){
+        try {
+            $simpanans = $this->simpananService->getTabunganByNasabahId($nasabah_id)
+            ->paginate();
+
+            return response()->json($simpanans);
+        } catch (\Throwable $th) {
+            return response()
+            ->json([
+                'message' => 'Error fetching data'
+            ],500);
+        }
+    }
 }

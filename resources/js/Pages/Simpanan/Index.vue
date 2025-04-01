@@ -21,7 +21,7 @@
                     <BukaTabunganBaru :selectedNasabahData="selectedNasabahData"></BukaTabunganBaru>
                 </TabsContent>
                 <TabsContent value="setor">
-                    <DepositTabungan />
+                    <DepositTabungan :selected-nasabah-data="selectedNasabahData" />
                 </TabsContent>
                 <TabsContent value="tabungan_list">
                     <TabunganList :selectedNasabahData="selectedNasabahData"></TabunganList>
@@ -44,7 +44,6 @@ import CardHeader from '@/components/ui/card/CardHeader.vue';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AuthenticatedLayout from '@/Layouts/AdminLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import NewSaving from './Components/NewSaving.vue';
 import DepositTabungan from './Components/DepositTabungan.vue';
 import Input from '@/components/ui/input/Input.vue';
 import BukaTabunganBaru from './Components/BukaTabunganBaru.vue';
