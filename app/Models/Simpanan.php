@@ -9,11 +9,31 @@ use Illuminate\Database\Eloquent\Model;
 class Simpanan extends Model
 {
     use HasFactory;
-    protected $fillable = ['nasabah_id', 'rekening_simpanan' ,'jenis_simpanan_id', 'tanggal_buka', 'saldo_awal', 'saldo_terkini', 'status_simpanan'];
+    protected $fillable = [
+        'nasabah_id', 
+        'rekening_simpanan', 
+        'jenis_simpanan_id', 
+        'tanggal_buka', 
+        'saldo_awal', 
+        'saldo_terkini', 
+        'status_simpanan'
+    ];
 
     protected $casts = [
         'rekening_simpanan' => 'string',
     ];
+
+    // Accessor untuk format saldo awal dalam Rupiah
+    public function getSaldoAwalRupiahAttribute()
+    {
+        return 'Rp. ' . number_format($this->saldo_awal, 0, ',', '.');
+    }
+
+    // Accessor untuk format saldo terkini dalam Rupiah
+    public function getSaldoTerkiniRupiahAttribute()
+    {
+        return 'Rp. ' . number_format($this->saldo_terkini, 0, ',', '.');
+    }
 
     protected static function boot()
     {

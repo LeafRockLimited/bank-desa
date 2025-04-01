@@ -112,6 +112,12 @@ class SimpananController extends Controller
             $simpanans = $this->simpananService->getTabunganByNasabahId($nasabah_id)
             ->paginate();
 
+            $simpanans->transform(function($simpanan) {
+                $simpanan->saldo_awal_rupiah = $simpanan->saldo_awal_rupiah; // Mengakses accessor
+                $simpanan->saldo_terkini_rupiah = $simpanan->saldo_terkini_rupiah; // Mengakses accessor
+                return $simpanan;
+            });        
+
             return response()->json($simpanans);
         } catch (\Throwable $th) {
             return response()
