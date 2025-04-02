@@ -11,10 +11,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Hapus tabel jika sudah ada
-        Schema::dropIfExists('kode_rekenings');
-
-        // Buat ulang tabel dengan struktur baru
         Schema::create('kode_rekenings', function (Blueprint $table) {
             $table->id();
             $table->string('module', 100)->default('general'); // Modul terkait (Tabungan, Pinjaman, dll.)
@@ -28,9 +24,11 @@ return new class extends Migration
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
-        // Hapus tabel saat rollback
         Schema::dropIfExists('kode_rekenings');
     }
 };

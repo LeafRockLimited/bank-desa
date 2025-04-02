@@ -11,26 +11,27 @@ class KodeRekening extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'nomor_rekening',
-        'nama_rekening',
-        'saldo_normal',
-        'deskripsi',
-        'level_one',
-        'uraian_level_one',
-        'level_two',
-        'uraian_level_two',
-        'level_three',
-        'uraian_level_three',
-        'level_four',
-        'uraian_level_four',
-        'level_five',
-        'uraian_level_five',
-        'level_six',
-        'uraian_level_six',
+        'module', 
+        'nomor_rekening', 
+        'nama_rekening', 
+        'deskripsi', 
+        'parent_id', 
+        'saldo_normal'
     ];
 
-    public function bukuBesars()
+    /**
+     * Relasi ke parent COA
+     */
+    public function parent()
     {
-        return $this->hasMany(BukuBesar::class, 'id_kode_rekening', 'id');
+        return $this->belongsTo(KodeRekening::class, 'parent_id');
+    }
+
+    /**
+     * Relasi ke child COA
+     */
+    public function children()
+    {
+        return $this->hasMany(KodeRekening::class, 'parent_id');
     }
 }

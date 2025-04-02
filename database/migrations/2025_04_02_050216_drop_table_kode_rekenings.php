@@ -11,10 +11,31 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Hapus tabel jika sudah ada
-        Schema::dropIfExists('kode_rekenings');
+        // Hapus foreign key di tabel lain yang bergantung pada kode_rekenings
+        Schema::table('rekening_plottings', function (Blueprint $table) {
+            $table->dropForeign(['kode_rekening_id']);
+        });
 
-        // Buat ulang tabel dengan struktur baru
+        Schema::table('jurnals', function (Blueprint $table) {
+            $table->dropForeign(['id_rekening']);
+        });
+
+        Schema::table('buku_besars', function (Blueprint $table) {
+            $table->dropForeign(['id_rekening']);
+        });
+
+        Schema::table('neracas', function (Blueprint $table) {
+            $table->dropForeign(['id_rekening']);
+        });
+        
+        Schema::dropIfExists('kode_rekenings');
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
         Schema::create('kode_rekenings', function (Blueprint $table) {
             $table->id();
             $table->string('module', 100)->default('general'); // Modul terkait (Tabungan, Pinjaman, dll.)
@@ -26,11 +47,5 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
-    }
-
-    public function down(): void
-    {
-        // Hapus tabel saat rollback
-        Schema::dropIfExists('kode_rekenings');
     }
 };
