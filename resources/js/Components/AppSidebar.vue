@@ -63,7 +63,7 @@ const items = [
 </script>
 
 <template>
-  <Sidebar>
+  <Sidebar class="bg-white">
     <SidebarContent>
       <SidebarGroup>
         <SidebarGroupLabel>Data</SidebarGroupLabel>
