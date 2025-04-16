@@ -26,7 +26,7 @@ trait LabaRugiTrait
             $rekening = KodeRekening::where('id',$jurnal->id_rekening)->first();
             $this->lastMonth = Carbon::create($jurnal->tanggal_transaksi)->subMonth()->format('m');
             $thisMonth = date('m',strtotime($jurnal->tanggal_transaksi));
-
+            
             $labaRugi1 = $this->iterProcess(LabaRugiLevel1::query(),  $thisMonth , 12, $jurnal, $rekening, 1 ,$jurnal->jumlah);
             $labaRugi2 = $this->iterProcess(LabaRugiLevel2::query(),  $thisMonth , 12, $jurnal, $rekening, 2 ,$jurnal->jumlah, $labaRugi1);
             $labaRugi3 = $this->iterProcess(LabaRugiLevel3::query(),  $thisMonth , 12, $jurnal, $rekening, 3 ,$jurnal->jumlah, $labaRugi2);
@@ -73,7 +73,6 @@ trait LabaRugiTrait
             $insertedData = [];
             for ($i = $month; $i <= $to; $i++) {
                 $modelQuery = clone $model;
-
                 $whereArray = [
                     'tahun' => date('Y', strtotime($jurnal->tanggal_transaksi)),
                     'bulan' => $i,
@@ -92,7 +91,6 @@ trait LabaRugiTrait
                         'total_this_month' => 0
                     ]
                 );
-
                 if ($i == $month) {
                     $modelQuery->total_this_month += $jumlah;
                 }
@@ -128,6 +126,7 @@ trait LabaRugiTrait
 
         catch (\Exception $e) {
             DB::rollBack();
+            Log::error($e->getMessage(),[$e]);
             throw $e;
         }
 
@@ -211,6 +210,7 @@ trait LabaRugiTrait
             )'
          ]
      );
+
 
     return $rumusLabaRugi;
     }

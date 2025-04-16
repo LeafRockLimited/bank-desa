@@ -8,23 +8,41 @@ class NeracaBkd
 {
     use HasFactory;
 
-    protected static $kas_tunai = '1.1.01.01';
+    /**
+     *aktiva:
+        - kas_tunai
+        - antar_bank
+        - pinjaman
+        - piutang
+        - investasi
+        - harta_tetap
+        - akumulasi_penyusutan
+
+    *pasiva:
+        - simpanan
+        - utang_bank
+        - utang_lainnya
+        - modal
+        - laba_rugi
+     */
+
+    protected static $kas_tunai = ['1.1.01.01','1.1.01.06'];
     protected static $bank = [
         '1.1.01.02',
         '1.1.01.03',
         '1.1.01.04',
         '1.1.01.05',
     ];
-    protected static $harta_tetap = [];
-    protected static $pinjaman_bkd_lain_aktiva = [];
-    protected static $akumulasi_penyusutan = [];
+    protected static $harta_tetap = ['1.3.01.01','1.3.02.01','1.3.03.01','1.3.04.01','1.3.05.01'];
+    protected static $pinjaman_bkd_lain_aktiva = ['1.1.03.99'];
+    protected static $akumulasi_penyusutan = ['1.3.07.01','1.3.07.02','1.3.07.03','1.3.07.04'];
 
 
-    protected static $bank_pasiva = [];
+    protected static $bank_pasiva = ['2.1.05.99','2.2.99.99'];
 
     protected static $pinjaman_bkd_lain = [];
     protected static $pinjaman_lainnya = [];
-    protected static $modal = [];
+    protected static $modal = ['3.1.01.01', '3.1.02.01'];
     protected static $rupa_pasiva = [];
 
     // Mengembalikan saldo kas dan antar bank dalam bentuk array
@@ -44,7 +62,7 @@ class NeracaBkd
             $total_aktiva = $aktiva->sum();
 
             $pasiva = collect([
-                'simpanan' => self::simpanan($tahun, $bulan),
+                'simpanan' => self::tabungan($tahun, $bulan),
                 'antar_bank' => self::getSaldo(self::$bank_pasiva, $tahun, $bulan),
                 'pinjaman_bkd_lain' => self::getSaldo(self::$pinjaman_bkd_lain, $tahun, $bulan),
                 'pinjaman_lainnya' => self::getSaldo(self::$pinjaman_lainnya, $tahun, $bulan),
@@ -53,17 +71,22 @@ class NeracaBkd
                 'laba_rugi' => LabaRugiBkd::where('tahun', $tahun)->where('bulan', $bulan)->all()
             ]);
 
-            $total_pasiva = $pasiva->map(function($item, $key) {
-                if(is_object($item) || is_array($item)){
-                    return $item['total'];
-
-                }elseif (is_numeric($item) || is_string($item)) {
-                    return $item;
-                }else{
-                   return 0;
+            $total_pasiva = $pasiva->map(function ($item) {
+                if (is_array($item) && isset($item['total'])) {
+                    return (float) $item['total'];
                 }
-                return $item;
+            
+                if (is_object($item) && isset($item->total)) {
+                    return (float) $item->total;
+                }
+            
+                if (is_numeric($item)) {
+                    return (float) $item;
+                }
+            
+                return 0;
             })->sum();
+            
 
             return (object) [
                 'aktiva' => [...$aktiva, 'total' => $total_aktiva],
@@ -82,9 +105,10 @@ class NeracaBkd
                             ? KodeRekening::whereIn('nomor_rekening', $rekening)->get() 
                             : KodeRekening::where('nomor_rekening', $rekening)->first();
 
-            if (!isset($kodeRekening)) {
+            if (is_null($kodeRekening) || (is_array($rekening) && $kodeRekening->isEmpty())) {
                 return 0;
             }
+                            
 
             return Jurnal::whereIn('id_rekening', $kodeRekening->pluck('id'))
                 ->when($tahun, function($query) use($tahun) {
@@ -114,18 +138,19 @@ class NeracaBkd
         }
     }
 
-    public static function simpanan($tahun = null, $bulan = null)
-    {
+    public static function tabungan($tahun = null, $bulan = null){
         try {
-            return Simpanan::when($tahun, function($query) use($tahun) {
-                return $query->whereYear('tanggal_setor', $tahun);
+            return TransaksiSimpanan::when($tahun, function($query) use($tahun) {
+                return $query->whereYear('tanggal_transaksi', $tahun);
             })
             ->when($bulan, function($query) use($bulan) {
-                return $query->whereMonth('tanggal_setor', '<=', $bulan);
+                return $query->whereMonth('tanggal_transaksi', '<=', $bulan);
             })
-            ->sum('jumlah_simpanan');
+            ->sum('nominal');
         } catch (\Throwable $th) {
             throw $th;
         }
     }
+
+    
 }

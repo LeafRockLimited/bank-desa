@@ -1,5 +1,5 @@
 <template>
-<div class="w-[calc(100%-var(--sidebar-width))] border-b fixed z-10 top-0 max-w-screen-xl border-gray-100">
+<div class="w-[calc(100%-var(--sidebar-width))] border-b fixed z-10 top-0 max-w-screen-xl bg-white border-gray-100">
     <div class="mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 justify-between items-center">
             <!-- Kiri: Logo & Menu -->

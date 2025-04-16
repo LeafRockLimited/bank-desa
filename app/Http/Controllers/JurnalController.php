@@ -14,6 +14,7 @@ use App\Models\KomponenLak;
 use App\NeracaTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -90,6 +91,7 @@ class JurnalController extends Controller
             ]);
         }catch (\Throwable $th) {
             DB::rollBack();
+            Log::error($th->getMessage(), [$th]);
             return response()->json([
                 'success' => false,
                 'error' => $th,

@@ -61,6 +61,7 @@ class LabaRugiBkd
             $bungaBulanan = self::bungaBulanan();
             $bungaTahunan = self::bungaTahunan();
             $bungaMusiman = self::bungaMusiman();
+            
 
             $bungaGiro = self::getSaldo(self::$bungaGiro, self::$tahun, self::$bulan);
             $bungaBritama = self::getSaldo(self::$bungaBritama, self::$tahun, self::$bulan);

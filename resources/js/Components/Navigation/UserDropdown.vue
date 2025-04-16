@@ -12,8 +12,30 @@ import DropdownMenuSub from '../ui/dropdown-menu/DropdownMenuSub.vue';
 import DropdownMenuSubTrigger from '../ui/dropdown-menu/DropdownMenuSubTrigger.vue';
 import DropdownMenuTrigger from '../ui/dropdown-menu/DropdownMenuTrigger.vue';
 import DropdownMenuSubContent from '../ui/dropdown-menu/DropdownMenuSubContent.vue';
+import axios from 'axios';
 
 
+// Fungsi untuk menangani klik Profile (mengarahkan ke /profile)
+const goToProfile = () => {
+  window.location.href = '/profile'; // Menggunakan route profile.edit
+};
+
+// Fungsi untuk menangani Log out (POST ke /logout)
+const handleLogout = async () => {
+  try {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    await axios.post('/logout', {}, {
+      headers: {
+        'X-CSRF-TOKEN': csrfToken,
+      },
+    });
+    // Redirect ke halaman login setelah logout berhasil
+    window.location.href = '/login';
+  } catch (error) {
+    console.error('Logout failed:', error);
+    alert('Gagal logout. Silakan coba lagi.');
+  }
+};
 </script>
 
 <template>
@@ -27,67 +49,16 @@ import DropdownMenuSubContent from '../ui/dropdown-menu/DropdownMenuSubContent.v
       <DropdownMenuLabel>My Account</DropdownMenuLabel>
       <DropdownMenuSeparator />
       <DropdownMenuGroup>
-        <DropdownMenuItem>
+        <DropdownMenuItem @click="goToProfile">
           <span>Profile</span>
           <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
         </DropdownMenuItem>
-        <DropdownMenuItem>
-          <span>Billing</span>
-          <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <span>Settings</span>
-          <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <span>Keyboard shortcuts</span>
-          <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
-        </DropdownMenuItem>
-      </DropdownMenuGroup>
-      <DropdownMenuSeparator />
-      <DropdownMenuGroup>
-        <DropdownMenuItem>
-          <span>Team</span>
-        </DropdownMenuItem>
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger>
-            <span>Invite users</span>
-          </DropdownMenuSubTrigger>
-          <DropdownMenuPortal>
-            <DropdownMenuSubContent>
-              <DropdownMenuItem>
-                <span>Email</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <span>Message</span>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <span>More...</span>
-              </DropdownMenuItem>
-            </DropdownMenuSubContent>
-          </DropdownMenuPortal>
-        </DropdownMenuSub>
-        <DropdownMenuItem>
-          <span>New Team</span>
-          <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
-        </DropdownMenuItem>
-      </DropdownMenuGroup>
-      <DropdownMenuSeparator />
-      <DropdownMenuItem>
-        <span>GitHub</span>
-      </DropdownMenuItem>
-      <DropdownMenuItem>
-        <span>Support</span>
-      </DropdownMenuItem>
-      <DropdownMenuItem disabled>
-        <span>API</span>
-      </DropdownMenuItem>
-      <DropdownMenuSeparator />
-      <DropdownMenuItem>
+        <DropdownMenuItem @click="handleLogout">
         <span>Log out</span>
         <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
       </DropdownMenuItem>
+      </DropdownMenuGroup>
+      
     </DropdownMenuContent>
   </DropdownMenu>
 </template>

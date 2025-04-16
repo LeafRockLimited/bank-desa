@@ -19,6 +19,15 @@ class KodeRekening extends Model
         'saldo_normal'
     ];
 
+    protected $appends = [
+        'level_one',
+        'level_two',
+        'level_three',
+        'level_four',
+        'level_five',
+        // Tambahkan jika kamu punya lebih banyak level
+    ];
+
     /**
      * Relasi ke parent COA
      */
@@ -33,5 +42,38 @@ class KodeRekening extends Model
     public function children()
     {
         return $this->hasMany(KodeRekening::class, 'parent_id');
+    }
+
+    /**
+     * Helper untuk memecah nomor rekening
+     */
+    protected function getNomorRekeningParts()
+    {
+        return explode('.', $this->nomor_rekening ?? '');
+    }
+
+    public function getLevelOneAttribute()
+    {
+        return $this->getNomorRekeningParts()[0] ?? null;
+    }
+
+    public function getLevelTwoAttribute()
+    {
+        return $this->getNomorRekeningParts()[1] ?? null;
+    }
+
+    public function getLevelThreeAttribute()
+    {
+        return $this->getNomorRekeningParts()[2] ?? null;
+    }
+
+    public function getLevelFourAttribute()
+    {
+        return $this->getNomorRekeningParts()[3] ?? null;
+    }
+
+    public function getLevelFiveAttribute()
+    {
+        return $this->getNomorRekeningParts()[4] ?? null;
     }
 }
